@@ -3,6 +3,8 @@ import "leaflet/dist/leaflet.css";
 import { icon } from 'leaflet';
 import { useState } from 'react';
 import {MapContainer,TileLayer, Marker, Popup, Polyline } from "react-leaflet" 
+import SearchBox from "./SearchBox";
+import RouteDetail  from "./RouteDetail";
 export default function Busmap(){
     const routeUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung?$format=JSON'
     const stopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung?$format=JSON'
@@ -12,17 +14,19 @@ export default function Busmap(){
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
-      });
+    });
     const BusStopIcon = icon({
         iconUrl: 'https://www.svgrepo.com/show/401245/bus-stop.svg', // 或者使用FontAwesomeIcon等其他圖示
         iconSize: [50,50],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
-      });
+    });
+    const [routeDetail,setRouteDetail]=useState([]) //使用useState來維護路線資訊的狀態
     const [routes, setRoutes] = useState([]); // 使用useState來維護路線的狀態
     const [stops, setStops] = useState([]); // 使用useState來維護路線的狀態
     const [bus, setBus] = useState([]); // 使用useState來維護路線的狀態
-    const [inputBus,setInputBus] =useState(1)
+    const [inputBus,setInputBus] =useState(3)
+    const routeDetailUrl =`https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung/${inputBus}?$format=JSON`
     const limeOptions = { color: 'blue' }
     const addRouteLine = ()=>{
         // 添加公車路線
@@ -63,33 +67,61 @@ export default function Busmap(){
             });
     }
     const addBusLocation = (e)=>{
-        e.preventDefault()
-        addRoutestops()
-        addRouteLine()
+            e.preventDefault()
+            addRoutestops()
+            addRouteLine()
+            queryRouteDetail()
+            axios({
+                method: 'get',
+                url: busUrl,
+                })
+                .then(function (response) {
+                    // console.log("HTTP 狀態碼:", response.status);
+                    console.log(inputBus)
+                    console.log("data:", response.data.filter((bus)=>bus.RouteID===inputBus));
+                    let busLocations = response.data.filter((bus)=>bus.RouteID===inputBus)
+                    setBus([...busLocations]);
+                });
+    }
+    const queryRouteDetail = ()=>{
         axios({
             method: 'get',
-            url: busUrl,
+            url: routeDetailUrl,
             })
             .then(function (response) {
                 // console.log("HTTP 狀態碼:", response.status);
-                console.log(inputBus)
-                console.log("data:", response.data.filter((bus)=>bus.RouteID===inputBus));
-                let busLocations = response.data.filter((bus)=>bus.RouteID===inputBus)
-                setBus([...busLocations]);
+                let routeDeatil=response.data.filter(route=>route.RouteID===inputBus&route.Direction===0)
+                routeDeatil.sort((a, b) => a.StopSequence - b.StopSequence);
+                console.log("回傳路線資料",routeDeatil)
+                setRouteDetail(()=>{
+                    return routeDeatil.map((item)=>{
+                        return{
+                            StopName: item.StopName.Zh_tw,
+                            StopSequence: item.StopSequence,
+                            StopStatus: item.StopStatus,
+                            NextBusTime: item.NextBusTime,  
+                            StopID: item.StopID,    
+                            EstimateTime: item.EstimateTime,     
+                            PlateNumb : item.PlateNumb             
+                        }
+                    })
+                })
             });
     }
     return(
-    <div>
-      <form onSubmit={addBusLocation}>
-        <label>
-          輸入路線:
-          <input type="text" value={inputBus} onChange={(e)=>{setInputBus(e.target.value)}} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+    <div className="main-content">
         {/* <button onClick={addRouteLine}>搜尋公車路徑</button>
         <button onClick={addRoutestops}>添加站點位置</button>
         <button onClick={addBusLocation}>添加公車位置</button> */}
+        <SearchBox 
+                inputBus={inputBus}
+                setInputBus={setInputBus}
+                addBusLocation={addBusLocation}
+        />
+        <RouteDetail
+            inputBus={inputBus}
+            routeDetail={routeDetail}
+        />
         <MapContainer center={[24.14427284629348, 120.67621054884772]} zoom={13}>
             <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
