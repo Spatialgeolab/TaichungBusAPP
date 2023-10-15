@@ -1,8 +1,10 @@
-import axios from 'axios'
 import React from 'react'
-import { useState } from 'react'
-
-export const RouteDetail = ({routeDetail}) => {
+import { useEffect } from 'react'
+export const RouteDetail = ({routeDetail,queryRouteDetail,direction}) => {
+    useEffect(() => {
+        // 在组件加载时触发数据查询
+        queryRouteDetail(direction);
+      }, [direction,]);
   return (
       <div className='route-content'>
         <h2 style={{ textAlign: 'center'}}>路線詳細資訊</h2>
@@ -19,27 +21,29 @@ export const RouteDetail = ({routeDetail}) => {
         </ul>
         <ul>
             {routeDetail.map((item)=>{
-                return (
-                    <li className="route-detail-header">
-                    <span lang="stopseq">{item.StopSequence}</span>
-                    <span lang="ivrno">{item.StopID }</span>
-                    <span lang="stopname">{item.StopName}</span>
-                    <span>
-                        <div lang="eta">{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':(()=>{
-                            const datetimeString = item.NextBusTime;
-                            const dateObj = new Date(datetimeString);
-                            // 提取小時和分鐘部分
-                            const hours = dateObj.getHours();
-                            const minutes = dateObj.getMinutes();
-                            // 格式化時間（加0是為了確保時間以兩位數表示）
-                            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                            return formattedTime
-                            })()}</div>
-                    </span>
-                    <span className='platenumb'>{Number(item.EstimateTime)<=180?item.PlateNumb:''}</span>
-                </li>
-                )
-            })}
+                    return (
+                        <li className="route-detail-header">
+                        <span lang="stopseq">{item.StopSequence}</span>
+                        <span lang="ivrno">{item.StopID }</span>
+                        <span lang="stopname">{item.StopName}</span>
+                        <span>
+                            <div lang="eta">{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':(()=>{
+                                const datetimeString = item.NextBusTime;
+                                const dateObj = new Date(datetimeString);
+                                // 提取小時和分鐘部分
+                                const hours = dateObj.getHours();
+                                const minutes = dateObj.getMinutes();
+                                // 格式化時間（加0是為了確保時間以兩位數表示）
+                                const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                                return formattedTime
+                                })()}</div>
+                        </span>
+                        <span className='platenumb'>{Number(item.EstimateTime)<=180?item.PlateNumb:''}</span>
+                    </li>
+                    )
+                }
+             )
+            } 
         </ul>
         
     </div>
