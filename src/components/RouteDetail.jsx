@@ -4,7 +4,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction}) => {
     useEffect(() => {
         // 在组件加载时触发数据查询
         queryRouteDetail(direction);
-      }, [direction,]);
+      }, [direction]);
   return (
       <div className='route-content'>
         <h2 style={{ textAlign: 'center'}}>路線詳細資訊</h2>

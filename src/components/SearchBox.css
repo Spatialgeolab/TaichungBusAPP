@@ -1,0 +1,14 @@
+.SearchBox {
+    width: 200px;
+    height: 500px;
+    background-color: bisque;
+    position: absolute;
+    top: 0px; /* 調整上邊距 */
+    left: 0px; /* 調整左邊距 */
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 50;
+}

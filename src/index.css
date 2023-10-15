@@ -17,12 +17,36 @@
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     z-index: 50;
 }
+.route-nav {
+    width: 400px;
+    height: auto;
+    background-color: bisque;
+    position: absolute;
+    top: 100px; /* 調整上邊距 */
+    right: 50%; /* 調整左邊距 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 50;
+    display: flex;
+    justify-content: space-around;
+    
+}
+.route-nav div {
+    background-color: skyblue;
+    width: 100px;
+    height:auto;
+    line-height: 50px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+}
 .route-content {
     width: auto;
     height: 400px;
     background-color: bisque;
     position: absolute;
-    top: 100px; /* 調整上邊距 */
+    top: 150px; /* 調整上邊距 */
     right: 20px; /* 調整左邊距 */
     background-color: white;
     padding: 10px;
@@ -34,11 +58,19 @@
     overflow: scroll;
 }
 .route-content h2 {
+    /* top: 0px; */
+    /* position: sticky; */
+    text-align: center;
+    margin: 10px;
+    display: block;
+    background-color: bisque;
+}
+.route-content ul:nth-child(2) {
     top: 0px;
+    width: auto;
     position: sticky;
     text-align: center;
-    margin: 0;
-    display: block;
+    margin: 10px;
     background-color: bisque;
 }
 .platenumb{
@@ -92,6 +124,3 @@ justify-content: space-between;
 align-items: center;
 }
 
-.route-detail-header:last-child {
-margin-right: 0; /* Optional: Remove margin from the last item to avoid extra spacing */
-}
