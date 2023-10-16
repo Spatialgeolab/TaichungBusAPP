@@ -1,18 +1,29 @@
 import React from 'react'
 import { useEffect } from 'react'
-export const RouteDetail = ({routeDetail,queryRouteDetail,direction}) => {
+export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef}) => {
     useEffect(() => {
-        // 在组件加载时触发数据查询
+        //組件加載時、切換頁面時觸發查詢
         queryRouteDetail(direction);
       }, [direction]);
+    const routeStopsSearch = (e)=>{
+        //透過leaflet Map元件的refHooks進行站點位置定位查詢
+        console.log(e.target.innerText)
+        let {PositionLat,PositionLon}=stops.filter((item)=>item.StopName===e.target.innerText)[0]
+        let map = mapRef.current
+        if (map){
+            console.log(PositionLat,PositionLon)
+            map.setView([PositionLat, PositionLon],30);
+        }
+
+    }
   return (
       <div className='route-content'>
-        <h2 style={{ textAlign: 'center'}}>路線詳細資訊</h2>
+        <h2 style={{ textAlign: 'center'}}>路線詳細資訊:{direction=='0'?'去程':'回程'}</h2>
         <ul>
             <li className="route-detail-header list-header">
-                <span lang="stopseq">站序</span>
-                <span lang="ivrno">簡碼</span>
-                <span lang="stopname">站名</span>
+                <span >站序</span>
+                <span >簡碼</span>
+                <span >站名</span>
                 <span>
                     <div id="eta">預估時間</div>
                 </span>
@@ -25,7 +36,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction}) => {
                         <li className="route-detail-header">
                         <span lang="stopseq">{item.StopSequence}</span>
                         <span lang="ivrno">{item.StopID }</span>
-                        <span lang="stopname">{item.StopName}</span>
+                        <span lang="stopname" onClick={routeStopsSearch}>{item.StopName}</span>
                         <span>
                             <div lang="eta">{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':(()=>{
                                 const datetimeString = item.NextBusTime;
@@ -45,7 +56,6 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction}) => {
              )
             } 
         </ul>
-        
     </div>
   )
 }
