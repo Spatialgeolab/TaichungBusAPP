@@ -34,8 +34,7 @@ export default function Busmap(){
                 console.log("HTTP 狀態碼:", response.status);
                 // console.log("data:", response.data);
                 // console.log('Geometry:',response.data[0].Geometry)
-                // let routeNodes = response.data.filter((route)=>route.RouteID===inputBus)
-                let routeNodes = response.data
+                let routeNodes = response.data.filter((route)=>route.RouteID===inputBus)
                 console.log('回傳資料:',routeNodes)
                 // 0去程 1回程
                 routeNodes = routeNodes[0].Geometry.replace('LINESTRING(','').replace(')','').split(',')
