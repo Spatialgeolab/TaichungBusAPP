@@ -1,14 +1,13 @@
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
 import { icon } from 'leaflet';
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Route,Routes } from "react-router-dom";
+import { useEffect, useState,useRef } from 'react';
+import {Route,Routes } from "react-router-dom";
 import {MapContainer,TileLayer, Marker, Popup, Polyline } from "react-leaflet" 
 import SearchBox from "./SearchBox";
 import RouteDetail  from "./RouteDetail";
 import RouteNav from "./RouteNav";
 export default function Busmap(){
-    //透過useEffect執行token取得
     const routeUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung?$format=JSON'
     const stopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung?$format=JSON'
     const busUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/Taichung?$format=JSON'
@@ -24,6 +23,7 @@ export default function Busmap(){
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
     });
+    const mapRef = useRef(null); // 地圖元素引用
     const [routeDetail,setRouteDetail]=useState([]) //使用useState來維護路線資訊的狀態
     const [routes, setRoutes] = useState([]); // 使用useState來維護路線的狀態
     const [stops, setStops] = useState([]); // 使用useState來維護路線的狀態
@@ -31,6 +31,20 @@ export default function Busmap(){
     const [inputBus,setInputBus] =useState(3)
     const routeDetailUrl =`https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung/${inputBus}?$format=JSON`
     const limeOptions = { color: 'blue' }
+    const [token,setToken] = useState('')
+    useEffect(()=>{
+            console.log('queryAPItoken')
+            axios({
+                method:"POST",
+                url:'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
+                header:{'Content-Type': 'application/x-www-form-urlencoded',
+                        'Host':'127.0.0.1'},
+                data:`grant_type=client_credentials&client_id=alt41450-f8e4d4b4-4612-4c08&client_secret=08462b91-86d6-46c0-9e73-13d94698d8af`
+            }).then(function(response){
+                setToken(response.data.access_token)
+            })
+        }
+    ,[])
     const addRouteLine = ()=>{
         // 添加公車路線
         axios({
@@ -66,7 +80,6 @@ export default function Busmap(){
                 }
                 })
                 setStops([...routeStops]);
-                console.log(stops)
             });
     }
     const addBusLocation = (e)=>{
@@ -87,6 +100,7 @@ export default function Busmap(){
                 });
     }
     const queryRouteDetail = (direction=0)=>{
+        console.log('queryRouteDetail')
         axios({
             method: 'get',
             url: routeDetailUrl,
@@ -95,7 +109,7 @@ export default function Busmap(){
             }
             })
             .then(function (response) {
-                // console.log("HTTP 狀態碼:", response.status);
+                console.log("HTTP 狀態碼:", response.status);
                 let routeDeatil=response.data.filter(route=>route.RouteID===inputBus&route.Direction===parseInt(direction))
                 routeDeatil.sort((a, b) => a.StopSequence - b.StopSequence);
                 console.log("回傳路線資料",routeDeatil)
@@ -114,18 +128,7 @@ export default function Busmap(){
                 })
             });
     }
-    const queryAPItoken = ()=>{
-        axios({
-            method:"POST",
-            url:'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
-            header:{'Content-Type': 'application/x-www-form-urlencoded',
-                    'Host':'127.0.0.1'},
-            data:`grant_type=client_credentials&client_id=alt41450-f8e4d4b4-4612-4c08&client_secret=08462b91-86d6-46c0-9e73-13d94698d8af`
-        }).then(function(response){
-            setToken(response.data.access_token)
-        })
-    }
-    const [token,setToken] = useState(queryAPItoken)
+
     return(
 
         <div className="main-content">
@@ -143,10 +146,10 @@ export default function Busmap(){
                 routeDetail={routeDetail}
             /> */}
             <Routes>
-                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail}/>} />
-                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail}/>} />
+                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef}/>} />
+                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef}/>} />
             </Routes>
-            <MapContainer center={[24.14427284629348, 120.67621054884772]} zoom={13}>
+            <MapContainer center={[24.14427284629348, 120.67621054884772]} zoom={13} ref={mapRef}>
                 <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
