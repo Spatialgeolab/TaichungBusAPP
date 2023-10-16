@@ -4,8 +4,13 @@ import { icon } from 'leaflet';
 import { useState } from 'react';
 import {MapContainer,TileLayer, Marker, Popup, Polyline } from "react-leaflet" 
 export default function Busmap(){
-    const routeUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung?$format=JSON'
-    const stopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung?$format=JSON'
+    const [routes, setRoutes] = useState([]); // 使用useState來維護路線的狀態
+    const [stops, setStops] = useState([]); // 使用useState來維護路線的狀態
+    const [bus, setBus] = useState([]); // 使用useState來維護路線的狀態
+    const [inputBus,setInputBus] =useState(1)
+    const limeOptions = { color: 'blue' }
+    const routeUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung/${inputBus}?$format=JSON`
+    const stopUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung/${inputBus}?$format=JSON`
     const busUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/Taichung?$format=JSON'
     const customIcon = icon({
         iconUrl: 'https://www.svgrepo.com/show/513278/bus.svg', // 或者使用FontAwesomeIcon等其他圖示
@@ -19,11 +24,6 @@ export default function Busmap(){
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
       });
-    const [routes, setRoutes] = useState([]); // 使用useState來維護路線的狀態
-    const [stops, setStops] = useState([]); // 使用useState來維護路線的狀態
-    const [bus, setBus] = useState([]); // 使用useState來維護路線的狀態
-    const [inputBus,setInputBus] =useState(1)
-    const limeOptions = { color: 'blue' }
     const addRouteLine = ()=>{
         // 添加公車路線
         axios({
@@ -31,10 +31,11 @@ export default function Busmap(){
             url: routeUrl,
             })
             .then(function (response) {
-                // console.log("HTTP 狀態碼:", response.status);
+                console.log("HTTP 狀態碼:", response.status);
                 // console.log("data:", response.data);
                 // console.log('Geometry:',response.data[0].Geometry)
-                let routeNodes = response.data.filter((route)=>route.RouteID===inputBus)
+                // let routeNodes = response.data.filter((route)=>route.RouteID===inputBus)
+                let routeNodes = response.data
                 console.log('回傳資料:',routeNodes)
                 // 0去程 1回程
                 routeNodes = routeNodes[0].Geometry.replace('LINESTRING(','').replace(')','').split(',')
