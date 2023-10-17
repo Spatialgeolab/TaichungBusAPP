@@ -1,10 +1,33 @@
 import React from 'react'
-import { useEffect } from 'react'
-export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef}) => {
+import { useEffect,useState,useRef} from 'react'
+export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef,inputBus}) => {
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [dateNow,setDateNow]=useState(new Date())
+    const prevRouteDetail = useRef(routeDetail);
+    prevRouteDetail.current = routeDetail;
+    //定時器更新hook
     useEffect(() => {
-        //組件加載時、切換頁面時觸發查詢
-        queryRouteDetail(direction);
-      }, [direction]);
+        // 定義更新計時器
+        console.log('數據更新')
+        const updateInterval = 1000; // 每秒更新時間
+        const timer = setTimeout(() => {
+        //倒數30秒調用setLastUpdated達到更新數據
+        if(30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)<=0){
+            setLastUpdated(new Date());
+             }
+        setDateNow(new Date())
+        clearTimeout(timer)
+        }, updateInterval);
+        return () => {
+        clearTimeout(timer);
+      };
+      }, [lastUpdated,dateNow]);
+    //路線資訊更新hook
+    useEffect(()=>{
+        setLastUpdated(new Date());
+        queryRouteDetail(direction)
+      },[direction])
+    //點擊站名定位站點
     const routeStopsSearch = (e)=>{
         //透過leaflet Map元件的refHooks進行站點位置定位查詢
         console.log(e.target.innerText)
@@ -14,7 +37,6 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
             console.log(PositionLat,PositionLon)
             map.setView([PositionLat, PositionLon],30);
         }
-
     }
   return (
       <div className='route-content'>
@@ -30,6 +52,15 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
                 <span lang="stopname">進站公車</span>
             </li>
         </ul>
+        <div>{(()=>{
+            let timeCountDown=30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)
+            return(
+                <div>
+                    <span>{`剩餘更新時間: ${timeCountDown}`}</span>
+                    <div className="progress" style={{ width: `${timeCountDown/30*100}%` }}></div>
+                </div>
+            )
+        })()}</div>
         <ul>
             {routeDetail.map((item)=>{
                     return (
@@ -39,6 +70,9 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
                         <span lang="stopname" onClick={routeStopsSearch}>{item.StopName}</span>
                         <span>
                             <div lang="eta">{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':(()=>{
+                                if(!item.NextBusTime){
+                                    return '末班駛離'
+                                }
                                 const datetimeString = item.NextBusTime;
                                 const dateObj = new Date(datetimeString);
                                 // 提取小時和分鐘部分

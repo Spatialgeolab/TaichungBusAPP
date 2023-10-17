@@ -28,7 +28,7 @@ export default function Busmap(){
     const [routes, setRoutes] = useState([]); // 使用useState來維護路線的狀態
     const [stops, setStops] = useState([]); // 使用useState來維護路線的狀態
     const [bus, setBus] = useState([]); // 使用useState來維護路線的狀態
-    const [inputBus,setInputBus] =useState(3)
+    const [inputBus,setInputBus] =useState('1')
     const routeDetailUrl =`https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung/${inputBus}?$format=JSON`
     const limeOptions = { color: 'blue' }
     const [token,setToken] = useState('')
@@ -146,8 +146,8 @@ export default function Busmap(){
                 routeDetail={routeDetail}
             /> */}
             <Routes>
-                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef}/>} />
-                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef}/>} />
+                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
+                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
             </Routes>
             <MapContainer center={[24.14427284629348, 120.67621054884772]} zoom={13} ref={mapRef}>
                 <TileLayer
