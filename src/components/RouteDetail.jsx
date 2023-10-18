@@ -35,7 +35,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
         let map = mapRef.current
         if (map){
             console.log(PositionLat,PositionLon)
-            map.setView([PositionLat, PositionLon],30);
+            map.setView([PositionLat, PositionLon],25);
         }
     }
   return (
@@ -55,7 +55,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
         <div>{(()=>{
             let timeCountDown=30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)
             return(
-                <div>
+                <div style={{margin:'10px'}}>
                     <span>{`剩餘更新時間: ${timeCountDown}`}</span>
                     <div className="progress" style={{ width: `${timeCountDown/30*100}%` }}></div>
                 </div>
