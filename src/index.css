@@ -15,7 +15,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 50;
+    z-index: 100;
 }
 .route-nav {
     width: 400px;
@@ -81,6 +81,7 @@
     position:relative
 }
 .route-detail-header {
+    margin: 10px;
     display: flex;
 }
 
@@ -115,13 +116,15 @@ ul {
 
   
 .route-detail-header {
-border: 1px solid #ccc;
 padding: 10px;
-margin: 5px;
 flex: 1;
 display: flex;
 justify-content: space-between;
 align-items: center;
+}
+.route-detail-header span{
+    border-right: 3px solid #ccc;
+    
 }
 
 /* 時間進度條 */
@@ -131,3 +134,21 @@ align-items: center;
     transition: 0.5s;
 }
 
+/* 路線列表 */
+.route-list{
+    display: none;
+}
+.route-list>li{
+    display: flex;
+    justify-content:left
+}
+.route-list>li>div:first-child{
+    padding-right: 20px;
+    border:1px solid #ccc;
+    width: 50px;
+}
+.route-list>li>div:nth-child(2){
+    padding-right: 20px;
+    border:1px solid #ccc;
+    width: 300px;
+}
