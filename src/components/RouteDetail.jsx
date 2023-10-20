@@ -16,7 +16,6 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
             setLastUpdated(new Date());
              }
         setDateNow(new Date())
-        clearTimeout(timer)
         }, updateInterval);
         return () => {
         clearTimeout(timer);
@@ -25,7 +24,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
     //路線資訊更新hook
     useEffect(()=>{
         setLastUpdated(new Date());
-        queryRouteDetail(direction)
+        queryRouteDetail(inputBus,direction)
       },[direction])
     //點擊站名定位站點
     const routeStopsSearch = (e)=>{

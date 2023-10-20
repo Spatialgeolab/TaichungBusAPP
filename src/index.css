@@ -137,6 +137,8 @@ align-items: center;
 /* 路線列表 */
 .route-list{
     display: none;
+    max-height: 450px;
+    display: scroll;
 }
 .route-list>li{
     display: flex;
@@ -151,4 +153,19 @@ align-items: center;
     padding-right: 20px;
     border:1px solid #ccc;
     width: 300px;
+}
+/* popup其他內容 */
+.station-routes-wrap{
+    display: none;
+    max-height: 300px;
+    overflow: scroll;
+}
+.station-routes-list{
+    display: flex;
+    justify-content: left;
+}
+.station-routes-list-item{
+    margin-right: 5px;
+    border-left: 1px solid #ccc;
+    align-content: center;
 }
