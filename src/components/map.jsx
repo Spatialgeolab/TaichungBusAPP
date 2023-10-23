@@ -7,6 +7,7 @@ import {MapContainer,TileLayer, Marker, Popup, Polyline } from "react-leaflet"
 import SearchBox from "./SearchBox";
 import RouteDetail  from "./RouteDetail";
 import RouteNav from "./RouteNav";
+import Button from 'react-bootstrap/Button';
 export default function Busmap(){
     const routeUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung/'
     const stopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung/'
@@ -103,6 +104,7 @@ export default function Busmap(){
     }
     const addBusLocation = (e,routeName=inputBus)=>{
             e.preventDefault()
+            setInputBus(routeName)
             console.log('addBusLocation',routeName)
             addRoutestops(routeName)
             addRouteLine(routeName)
@@ -198,72 +200,94 @@ export default function Busmap(){
         queryStationRoute()
     },[stopName])
     return(
-        <div className="main-content">
-            <SearchBox 
-                    inputBus={inputBus}
-                    setInputBus={setInputBus}
-                    addBusLocation={addBusLocation}
-                    routeListUrl={routeListUrl}
-                    token={token}
-                    />
-            <RouteNav />    
-            <Routes>
-                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
-                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
-            </Routes>
-            <MapContainer center={[24.14427284629348, 120.67621054884772]} zoom={13} ref={mapRef}>
-                <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {routes.map((line,index)=>
-                <Polyline pathOptions={limeOptions} positions={line} key={index}/>)
-                }
-                {
-                stops.map((stop,index)=>
-                    <Marker key={index} position={[stop.PositionLat,stop.PositionLon]} icon={BusStopIcon}>
-                            <Popup>
-                                <div>{stop.StopName}</div>
-                                <div>
-                                    {/* onClick先透過setStopName紀錄站位名子 */}
-                                    <div style={{margin:'10px'}} onClick={(e)=>{setStopName(e.target.getAttribute('StopName'))}} StopName={stop.StopName}>經過路線</div>
-                                    <ul className="station-routes-wrap" >
-                                        {/* 透過當前stop.StopName(popup)跟目前狀態中的路線資訊比較進行顯示設定 */}
-                                        {otherRouteDeatil[0].StopName===stop.StopName?otherRouteDeatil.map((item)=>{
-                                            return (
-                                                <li className="station-routes-list">
-                                                    <span className="station-routes-list-item">{item.RouteName}</span>
-                                                    <span className="station-routes-list-item">{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':
-                                                        (()=>{
-                                                            if(!item.NextBusTime){
-                                                                return '末班駛離'
-                                                            }
-                                                            const datetimeString = item.NextBusTime;
-                                                            const dateObj = new Date(datetimeString);
-                                                            // 提取小時和分鐘部分
-                                                            const hours = dateObj.getHours();
-                                                            const minutes = dateObj.getMinutes();
-                                                            // 格式化時間（加0是為了確保時間以兩位數表示）
-                                                            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                                                            return formattedTime
-                                                            })()}
-                                                    </span>
-                                                    <span className="station-routes-list-item">{' 往: '+item.RouteDirection}</span>
-                                                </li>
-                                            )
-                                        }):null}
-                                    </ul>
-                                </div>
-                            </Popup>
-                    </Marker>)
-                }
-                {
-                bus.map((bus,index)=>
-                    <Marker key={index} position={[bus.BusPosition.PositionLat
-                        ,bus.BusPosition.PositionLon]} icon={customIcon}>
-                            <Popup>{bus.PlateNumb}</Popup>
-                    </Marker>)
-                }
-            </MapContainer>
-        </div>
+        <>
+            <nav class="navbar navbar-light bg-light">
+                <h1 className="text-dark d-block w-100 text-center">台中市即時公車地圖</h1>
+            </nav>
+            <div className="container-fluid">
+                <div class="row ">
+                    <div class="col-4">
+                        <div className="container">
+                            <SearchBox
+                                inputBus={inputBus}
+                                setInputBus={setInputBus}
+                                addBusLocation={addBusLocation}
+                                routeListUrl={routeListUrl}
+                                token={token}/>
+                            <RouteNav />    
+                            <Routes>
+                                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
+                                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
+                            </Routes>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div className="main-content">
+                            <MapContainer  center={[24.14427284629348, 120.67621054884772]} zoom={13} ref={mapRef}>
+                                <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png" />
+                                {
+                                bus.map((bus,index)=>
+                                    <Marker key={index} position={[bus.BusPosition.PositionLat
+                                        ,bus.BusPosition.PositionLon]} icon={customIcon} zIndexOffset={1000 + index}>
+                                            <Popup>{bus.PlateNumb}</Popup>
+                                    </Marker>)
+                                }
+                                {routes.map((line,index)=>
+                                <Polyline pathOptions={limeOptions} positions={line} key={index}/>)
+                                }
+                                {
+                                stops.map((stop,index)=>
+                                    <Marker key={index} position={[stop.PositionLat,stop.PositionLon]} icon={BusStopIcon}>
+                                            <Popup>
+                                                <div>
+                                                    <div className="stop-info">{stop.StopName}</div>
+                                                    <div className="stop-info">路線:{inputBus}</div>
+                                                    {/* onClick先透過setStopName紀錄站位名子 */}
+                                                    <Button variant="success" className='col-12 p-10 ' onClick={(e)=>{setStopName(e.target.getAttribute('StopName'))}} StopName={stop.StopName}>其他路線</Button>{}
+                                                    <ul className="other-route-list" >
+                                                        {/* 透過當前stop.StopName(popup)跟目前狀態中的路線資訊比較進行顯示設定 */}
+                                                        {otherRouteDeatil[0].StopName===stop.StopName?otherRouteDeatil.map((item)=>{
+                                                            return (
+                                                                    <li className="list-group-item route-detail-header ">
+                                                                        <span className="btn btn-success w-25" style={{marginRight:'5px'}} onClick={(e)=>{
+                                                                            addBusLocation(e,item.RouteName)}}>{item.RouteName}</span>
+                                                                        <span className="w-50 text-left">{' 往: '+item.RouteDirection}</span>
+                                                                        <span className={`text-right badge bg-${!item.EstimateTime?'secondary':(Math.round(item.EstimateTime)/60)<5?'danger':'primary'}`}>{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':
+                                                                            (()=>{
+                                                                                if(!item.NextBusTime){
+                                                                                    return '末班駛離'
+                                                                                }
+                                                                                const datetimeString = item.NextBusTime;
+                                                                                const dateObj = new Date(datetimeString);
+                                                                                // 提取小時和分鐘部分
+                                                                                const hours = dateObj.getHours();
+                                                                                const minutes = dateObj.getMinutes();
+                                                                                // 格式化時間（加0是為了確保時間以兩位數表示）
+                                                                                const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                                                                                return formattedTime
+                                                                                })()}
+                                                                        </span>
+                                                                    </li>
+                                                            )
+                                                        }):null}
+                                                    </ul>
+                                                </div>
+                                            </Popup>
+                                    </Marker>)
+                                }
+                            </MapContainer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-light bg-light">
+                <a class="navbar-brand d-block" href="https://www.spatialgeolab.com/" target="blank">
+                    <img className="img-fluid " src="https://scontent.ftpe4-1.fna.fbcdn.net/v/t39.30808-6/340133514_716381103617350_8908784504811723853_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ODQ7DVjEt0YAX9KgQ0g&_nc_ht=scontent.ftpe4-1.fna&oh=00_AfA1CD5-xj2NaqL-Pdf-PO698QqZU2jHgC7SQrG1nVooww&oe=653708C6" width="30" height="30" class="d-inline-block align-top" alt=""/>
+                    GeoLab空間資訊實驗室製作維護
+                </a>
+            </nav>
+        </>
     )
 }

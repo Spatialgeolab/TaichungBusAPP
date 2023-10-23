@@ -1,10 +1,16 @@
 .leaflet-container {
     width: 100%;
-    height: 100vh;
+    height: 85vh;
     z-index: 10;
+    border: 2px solid #ccc;
   }
+  /* Title */
+nav h1 {
+    font-weight: bolder;
+}
+  /*  */
 .SearchBox {
-    width: auto;
+    width: 500px;
     height: auto;
     background-color: bisque;
     position: absolute;
@@ -18,12 +24,9 @@
     z-index: 100;
 }
 .route-nav {
+    color: white;
     width: 400px;
     height: auto;
-    background-color: bisque;
-    position: absolute;
-    top: 100px; /* 調整上邊距 */
-    right: 50%; /* 調整左邊距 */
     border: 1px solid #ccc;
     border-radius: 5px;
     text-align: center;
@@ -45,9 +48,6 @@
     width: auto;
     height: 400px;
     background-color: bisque;
-    position: absolute;
-    top: 150px; /* 調整上邊距 */
-    right: 20px; /* 調整左邊距 */
     background-color: white;
     padding: 10px;
     padding-top: 0;
@@ -57,13 +57,12 @@
     z-index: 50;
     overflow: scroll;
 }
-.route-content h2 {
-    /* top: 0px; */
-    /* position: sticky; */
+h3 {
     text-align: center;
     margin: 10px;
     display: block;
-    background-color: bisque;
+    /* background-color: #; */
+    /* color: aliceblue; */
 }
 .route-content ul:nth-child(2) {
     top: 0px;
@@ -81,7 +80,7 @@
     position:relative
 }
 .route-detail-header {
-    margin: 10px;
+    margin: 5px;
     display: flex;
 }
 
@@ -94,7 +93,7 @@
 }
 ul {
     padding: 0;
-    margin-top: 40px;
+    margin-top: 10px;
 }
 
 .route-detail-header span:nth-child(1){
@@ -104,15 +103,19 @@ ul {
     width: 15%;
 }
 .route-detail-header span:nth-child(3){
-    width: 40%;
+    width: 35%;
 }
 .route-detail-header span:nth-child(4){
-    width: 15%;
-    text-align: right;
+    width: 20%;
 }
-.route-detail-header .list-header{
-    width: 30%;
+.route-detail-header span:nth-child(5){
+    width: 20%;
 }
+.route-detail-header span{
+    padding: 3px;
+    margin-right: 1px;
+}
+
 
   
 .route-detail-header {
@@ -122,10 +125,7 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 }
-.route-detail-header span{
-    border-right: 3px solid #ccc;
-    
-}
+
 
 /* 時間進度條 */
 .progress{
@@ -137,7 +137,7 @@ align-items: center;
 /* 路線列表 */
 .route-list{
     display: none;
-    max-height: 450px;
+    max-height: 85vh;
     display: scroll;
 }
 .route-list>li{
@@ -157,7 +157,7 @@ align-items: center;
 /* popup其他內容 */
 .station-routes-wrap{
     display: none;
-    max-height: 300px;
+    max-height: 80vh;
     overflow: scroll;
 }
 .station-routes-list{
@@ -168,4 +168,72 @@ align-items: center;
     margin-right: 5px;
     border-left: 1px solid #ccc;
     align-content: center;
+}
+.leaflet-popup-content-wrapper{
+    max-height: 400px;
+}
+
+.stop-info{
+    font-size: 1.2rem;
+    padding: 5px;
+    text-align: center;
+    
+}
+.other-route-list{
+    max-height: 200px;
+    overflow: scroll;
+}
+
+/* 搜尋框bootstrap5 custom */
+.list-group{
+    max-height: 100vh;
+    overflow: scroll;
+}
+.list-group:first-of-type{
+    max-height: 65vh;
+    overflow:auto
+}
+
+.form-outline{
+    position: relative;
+}
+.form-floating > label{
+    left: 10px;
+}
+.route-list-item{
+    position: absolute;
+    background-color: #ccc;
+    z-index: 50;
+    top: 47px;
+}
+/* 更改滾動條 */
+::-webkit-scrollbar {
+    width: 8px;
+    height:8px
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgb(201, 189, 189);
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color:#fff;
+    -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+}
+
+/*  */
+.list-group-item{
+    cursor: default;
+}
+.item-stop-name{
+    cursor: pointer;
+}
+
+/* 路線資訊框header */
+.badge{
+    font-size: 15px;
+    font-weight: bold;
+
 }
