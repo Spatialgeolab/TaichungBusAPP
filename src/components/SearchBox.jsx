@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.css';
 import { useState,useRef,useEffect } from 'react';
 import axios from 'axios';
 export default function SearchBox ({ inputBus, setInputBus, addBusLocation,routeListUrl,token}){
@@ -47,22 +48,22 @@ export default function SearchBox ({ inputBus, setInputBus, addBusLocation,route
   useEffect(()=>{getRouteList();
   console.log('執行getRouteList()取的靜態路線資料')},[])
   return (
-    <div className="SearchBox">
-      <form onSubmit={addBusLocation}>
-        <label>
-          輸入路線:
-          <input type="text" value={inputBus} onChange={(e)=>setRouteQueryId(e.target.value)}
-           onFocus={()=>{setInputBus('')}}/>
-        </label>
-        {/* <input type="submit" value="Submit" /> */}
+    
+    <div className="form-outline">
+      <form onSubmit={addBusLocation} className='row'>
+        <div className="form-floating">
+          <input type="text" className='form-control' id='typeText' value={inputBus} onChange={(e)=>setRouteQueryId(e.target.value)}
+           onFocus={()=>{setInputBus('')}} placeholder="1"/>
+          <label className="text-center" for="typeText">輸入路線</label>
+        </div>
       </form>
-        <ul className='route-list' ref={refRouteList}>
+        <ul className='list-group list-group-light route-list-item w-100 ' ref={refRouteList}>
           {/* 動態創建搜尋路線資訊表 */}
         {routeFilter.map((routeItem)=>{
           return(
-              <li className='route-list-item' routeId={routeItem.RouteName} onClick={searchByClick} >
-                <div routeId={routeItem.RouteName}>{`${routeItem.RouteName}`}</div>
-                <div routeId={routeItem.RouteName}>{`${routeItem.Headsign}`}</div>
+              <li className='list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-info'  routeId={routeItem.RouteName} onClick={searchByClick} >
+                <div className='"badge badge-primary rounded-pill px-3 border-0 rounded-3 mb-2'  routeId={routeItem.RouteName}>{`${routeItem.RouteName}`}</div>
+                <div className='"badge badge-primary rounded-pill px-3 border-0 rounded-3 mb-2' routeId={routeItem.RouteName}>{`${routeItem.Headsign}`}</div>
               </li>
           )
         })}

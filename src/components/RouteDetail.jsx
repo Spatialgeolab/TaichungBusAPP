@@ -38,36 +38,26 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
         }
     }
   return (
-      <div className='route-content'>
-        <h2 style={{ textAlign: 'center'}}>路線詳細資訊:{direction=='0'?'去程':'回程'}</h2>
-        <ul>
-            <li className="route-detail-header list-header">
-                <span >站序</span>
-                <span >簡碼</span>
-                <span >站名</span>
-                <span>
-                    <div id="eta">預估時間</div>
-                </span>
-                <span lang="stopname">進站公車</span>
+      <div className='border border-3'>
+        <h3 className='badge text-bg-warning d-block'>路線詳細資訊:
+        {stops.length===0?'':direction=='0'?`往 ${stops[stops.length-1].StopName}`:`往 ${stops[0].StopName}`}
+        </h3>
+        <ul className='list-group '>
+            <li className="list-group-item route-detail-header">
+                <span className='bg-dark badge ' >站序</span>
+                <span className='bg-dark badge '>簡碼</span>
+                <span className='bg-dark badge '>站名</span>
+                <span className='bg-dark badge '>預估時間</span>
+                <span className='bg-dark badge '>進站公車</span>
             </li>
-        </ul>
-        <div>{(()=>{
-            let timeCountDown=30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)
-            return(
-                <div style={{margin:'10px'}}>
-                    <span>{`剩餘更新時間: ${timeCountDown}`}</span>
-                    <div className="progress" style={{ width: `${timeCountDown/30*100}%` }}></div>
-                </div>
-            )
-        })()}</div>
-        <ul>
             {routeDetail.map((item)=>{
                     return (
-                        <li className="route-detail-header">
-                        <span lang="stopseq">{item.StopSequence}</span>
-                        <span lang="ivrno">{item.StopID }</span>
-                        <span lang="stopname" onClick={routeStopsSearch}>{item.StopName}</span>
-                        <span>
+                    <li className="route-detail-header list-group-item ">
+                        <span className=''>{item.StopSequence}</span>
+                        <span className='flex-md-wrap align-items-start w-10'>{item.StopID }</span>
+                        <span className='item-stop-name flex-md-wrap' onClick={routeStopsSearch}>{item.StopName}</span>
+                        {/* 透過剩餘到站時間進行樣式變化 */}
+                        <span className={`text-center badge bg-${!item.EstimateTime?'secondary':(Math.round(item.EstimateTime)/60)<5?'danger':'primary'}`}>
                             <div lang="eta">{item.EstimateTime?Math.round(item.EstimateTime/60)+'分':(()=>{
                                 if(!item.NextBusTime){
                                     return '末班駛離'
@@ -89,6 +79,15 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
              )
             } 
         </ul>
+        <div>{(()=>{
+            let timeCountDown=30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)
+            return(
+                <div style={{margin:'10px'}}>
+                    <span>{`剩餘更新時間: ${timeCountDown}`}</span>
+                    <div className="progress" style={{ width: `${timeCountDown/30*100}%` }}></div>
+                </div>
+            )
+        })()}</div>
     </div>
   )
 }
