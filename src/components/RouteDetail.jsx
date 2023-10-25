@@ -15,6 +15,7 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
         if(30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)<=0){
             setLastUpdated(new Date());
              }
+        // console.log('數據更新')
         setDateNow(new Date())
         }, updateInterval);
         return () => {
@@ -23,9 +24,9 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
       }, [lastUpdated,dateNow]);
     //路線資訊更新hook
     useEffect(()=>{
-        console.log(direction)
         setLastUpdated(new Date());
         queryRouteDetail(inputBus,direction)
+        console.log('方向改變 觸發更新')
       },[direction])
     //點擊站名定位站點
     const routeStopsSearch = (e)=>{
@@ -41,7 +42,8 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
   return (
       <div className='border border-3'>
         <h3 className='badge text-bg-warning d-block'>路線詳細資訊:
-        {stops.length===0?'':direction=='0'?`往 ${stops[stops.length-1].StopName}`:`往 ${stops[0].StopName}`}
+        {/* 因路線也有更改只需抓最後一站即可知道方向 */}
+        {`${stops.length===0?'':`往 ${stops[stops.length-1].StopName}`}`}
         </h3>
         <ul className='list-group '>
             <li className="list-group-item route-detail-header">
