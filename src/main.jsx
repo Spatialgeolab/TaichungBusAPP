@@ -5,7 +5,8 @@ import './index.css'
 import { BrowserRouter,Routes} from "react-router-dom";
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    {/* 配合gh-pages進行設定 */}
+    <BrowserRouter basename="/TaichungBusAPP">
         <Busmap />  
     </BrowserRouter>
   </React.StrictMode>,

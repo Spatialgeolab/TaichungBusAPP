@@ -1,56 +1,69 @@
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
 import { icon } from 'leaflet';
-import { useEffect, useState,useRef } from 'react';
-import {Route,Routes } from "react-router-dom";
+import { useEffect, useState,useRef,} from 'react';
+import {Route,Routes,useLocation} from "react-router-dom";
 import {MapContainer,TileLayer, Marker, Popup, Polyline } from "react-leaflet" 
 import SearchBox from "./SearchBox";
 import RouteDetail  from "./RouteDetail";
 import RouteNav from "./RouteNav";
 import Button from 'react-bootstrap/Button';
 export default function Busmap(){
+    const location = useLocation();
     const routeUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung/'
     const stopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung/'
-    // todo 測試是否改成routeName查詢
     const busUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/Taichung/'
     const routeListUrl = 'https://tdx.transportdata.tw/api/basic/v2/Bus/Route/City/Taichung?$format=JSON'
-    const customIcon = icon({
-        iconUrl: 'https://www.svgrepo.com/show/513278/bus.svg', // 或者使用FontAwesomeIcon等其他圖示
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-    });
-    const BusStopIcon = icon({
-        iconUrl: 'https://www.svgrepo.com/show/401245/bus-stop.svg', // 或者使用FontAwesomeIcon等其他圖示
-        iconSize: [30,30],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-    });
+    const routeDetailUrl =`https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung/`
+    // 自定義icon
+    const customIcon = {
+        Bus:icon({
+            iconUrl: 'https://www.svgrepo.com/show/513278/bus.svg', // 或者使用FontAwesomeIcon等其他圖示
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+        }),
+        BusStopIcon:icon({
+            iconUrl: 'https://www.svgrepo.com/show/401245/bus-stop.svg', // 或者使用FontAwesomeIcon等其他圖示
+            iconSize: [30,30],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+        }),
+
+    }
     const mapRef = useRef(null); // 地圖元素引用
     const [routeDetail,setRouteDetail]=useState([]) //使用useState來維護路線資訊的狀態
     const [routes, setRoutes] = useState([]); // 使用useState來維護路線的狀態
-    const [stops, setStops] = useState([]); // 使用useState來維護路線的狀態
-    const [bus, setBus] = useState([]); // 使用useState來維護路線的狀態
-    const [stopName,setStopName]=useState('')
-    const [inputBus,setInputBus] =useState('1')
+    const [stops, setStops] = useState([]); // 使用useState來維護站牌的狀態
+    const [bus, setBus] = useState([]); // 使用useState來維護公車定位的狀態
+    const [stopName,setStopName]=useState('')// 使用useState來維護站位的狀態
+    const [inputBus,setInputBus] =useState('1')//使用useState來當前查詢路線的狀態
+    const [direction,setDirection]=useState(0)
     const [otherRouteDeatil,setOtherRouteDeatil]=useState([{}])
-    const routeDetailUrl =`https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung/`
-    const limeOptions = { color: 'blue',dashArray: '10, 10'}
-    const [token,setToken] = useState('123')
+    const lineOptions = { color: 'blue',dashArray: '10, 10'}
+    const [token,setToken] = useState('initialzation')
     useEffect(()=>{
-            console.log('queryAPItoken')
-            axios({
-                method:"POST",
-                url:'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
-                header:{'Content-Type': 'application/x-www-form-urlencoded',
-                        'Host':'127.0.0.1'},
-                data:`grant_type=client_credentials&client_id=alt41450-f8e4d4b4-4612-4c08&client_secret=08462b91-86d6-46c0-9e73-13d94698d8af`
-            }).then(function(response){
-                setToken(response.data.access_token)
-            })
-            console.log(token)}
-    ,[])
-    const addRouteLine = (routeName=inputBus)=>{
+        const token_initialize=(async()=>{
+            try{
+                let token
+                // console.log('queryAPItoken',token)
+                const response = await axios({
+                    method:"POST",
+                    url:'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
+                    header:{'Content-Type': 'application/x-www-form-urlencoded',
+                            'Host':'127.0.0.1'},
+                    data:`grant_type=client_credentials&client_id=alt41450-f8e4d4b4-4612-4c08&client_secret=08462b91-86d6-46c0-9e73-13d94698d8af`
+                })
+                token = response.data.access_token;
+                setToken(token)
+                // console.log('Update token', token);
+                return token
+            }catch{
+                console.error('Error fetching token:', error);
+                return null; // Return null or handle the error as needed
+            }})()
+    },[])
+    const addRouteLine = (routeName=inputBus,dir_index=direction)=>{
         // 添加公車路線
         axios({
             method: 'get',
@@ -61,18 +74,15 @@ export default function Busmap(){
             })
             .then(function (response) {
                 console.log("HTTP 狀態碼:", response.status);
-                // console.log("data:", response.data);
-                // console.log('Geometry:',response.data[0].Geometry)
                 let routeNodes = response.data
-                // console.log('回傳資料:',routeNodes)
                 // 0去程 1回程
-                routeNodes = routeNodes[0].Geometry.replace('LINESTRING(','').replace(')','').split(',')
+                routeNodes = routeNodes[direction].Geometry.replace('LINESTRING(','').replace(')','').split(',')
                 let routeLine = routeNodes.map(node=>[node.split(' ')[1],node.split(' ')[0]])
                 setRoutes([routeLine]);
             });
 
     }
-    const addRoutestops = (routeName=inputBus)=>{
+    const addRoutestops = (routeName=inputBus,dir_index=direction)=>{
         console.log('addRoutestops',routeName)
         axios({
             method: 'get',
@@ -86,7 +96,7 @@ export default function Busmap(){
                 let routeStops =response.data
                 // console.log('查詢路線:',routeName,'| 回傳站點資料:',routeStops)
                 // routeStops[0] 0去程 1回程
-                routeStops = routeStops[0].Stops.map((stops)=>{return {
+                routeStops = routeStops[dir_index].Stops.map((stops)=>{return {
                     StopName: stops.StopName.Zh_tw,
                     PositionLat: stops.StopPosition.PositionLat,
                     PositionLon: stops.StopPosition.PositionLon,
@@ -102,7 +112,7 @@ export default function Busmap(){
                 setStops(routeStops);
             });
     }
-    const addBusLocation = (e,routeName=inputBus)=>{
+    const addBusLocation = (e,routeName=inputBus,dir_index=direction)=>{
             e.preventDefault()
             setInputBus(routeName)
             console.log('addBusLocation',routeName)
@@ -114,12 +124,12 @@ export default function Busmap(){
                 url: busUrl+`${routeName}?$format=JSON`+`&$filter=RouteName/Zh_tw eq '${routeName}'`,
                 })
                 .then(function (response) {
-                    // console.log("HTTP 狀態碼:", response.status);
                     let busLocations = response.data
+                    busLocations=busLocations.filter((item)=>item.Direction===dir_index)
                     setBus([...busLocations]);
                 });
     }
-    const queryRouteDetail = (routeName=inputBus,direction=0)=>{
+    const queryRouteDetail = (routeName=inputBus,dir_index=direction)=>{
         axios({
             method: 'get',
             url: routeDetailUrl+`${routeName}?$format=JSON`+`&$filter=RouteName/Zh_tw eq '${routeName}'`,
@@ -128,7 +138,7 @@ export default function Busmap(){
             }
             })
             .then(function (response) {
-                let routeDeatil=response.data.filter(route=>route.Direction===parseInt(direction))
+                let routeDeatil=response.data.filter(route=>route.Direction===parseInt(dir_index))
                 routeDeatil.sort((a, b) => a.StopSequence - b.StopSequence);
                 // console.log('查詢路線:',routeName,"回傳路線資料:",routeDeatil)
                 setRouteDetail(()=>{
@@ -199,6 +209,19 @@ export default function Busmap(){
     useEffect(()=>{
         queryStationRoute()
     },[stopName])
+    useEffect(()=>{
+        addRoutestops(inputBus)
+        addRouteLine(inputBus)
+        axios({
+            method: 'get',
+            url: busUrl+`${inputBus}?$format=JSON`+`&$filter=RouteName/Zh_tw eq '${inputBus}'`,
+            })
+            .then(function (response) {
+                let busLocations = response.data
+                busLocations=busLocations.filter((item)=>item.Direction===direction)
+                setBus([...busLocations]);
+            });
+    },[direction])
     return(
         <>
             <nav class="navbar navbar-light bg-light">
@@ -214,10 +237,10 @@ export default function Busmap(){
                                 addBusLocation={addBusLocation}
                                 routeListUrl={routeListUrl}
                                 token={token}/>
-                            <RouteNav />    
+                            <RouteNav setDirection={setDirection} />    
                             <Routes>
-                                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction='0' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
-                                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction='1' queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
+                                <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction={direction} queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
+                                <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction={direction} queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
                             </Routes>
                         </div>
                     </div>
@@ -230,16 +253,16 @@ export default function Busmap(){
                                 {
                                 bus.map((bus,index)=>
                                     <Marker key={index} position={[bus.BusPosition.PositionLat
-                                        ,bus.BusPosition.PositionLon]} icon={customIcon} zIndexOffset={1000 + index}>
+                                        ,bus.BusPosition.PositionLon]} icon={customIcon.Bus} zIndexOffset={1000 + index}>
                                             <Popup>{bus.PlateNumb}</Popup>
                                     </Marker>)
                                 }
                                 {routes.map((line,index)=>
-                                <Polyline pathOptions={limeOptions} positions={line} key={index}/>)
+                                <Polyline pathOptions={direction===0?lineOptions:(()=>{lineOptions.color='red';return lineOptions})()} positions={line} key={index}/>)
                                 }
                                 {
                                 stops.map((stop,index)=>
-                                    <Marker key={index} position={[stop.PositionLat,stop.PositionLon]} icon={BusStopIcon}>
+                                    <Marker key={index} position={[stop.PositionLat,stop.PositionLon]} icon={customIcon.BusStopIcon}>
                                             <Popup>
                                                 <div>
                                                     <div className="stop-info">{stop.StopName}</div>
@@ -248,7 +271,7 @@ export default function Busmap(){
                                                     <Button variant="success" className='col-12 p-10 ' onClick={(e)=>{setStopName(e.target.getAttribute('StopName'))}} StopName={stop.StopName}>其他路線</Button>{}
                                                     <ul className="other-route-list" >
                                                         {/* 透過當前stop.StopName(popup)跟目前狀態中的路線資訊比較進行顯示設定 */}
-                                                        {otherRouteDeatil[0].StopName===stop.StopName?otherRouteDeatil.map((item)=>{
+                                                        {!otherRouteDeatil[0].StopName?'':otherRouteDeatil[0].StopName===stop.StopName?otherRouteDeatil.map((item)=>{
                                                             return (
                                                                     <li className="list-group-item route-detail-header ">
                                                                         <span className="btn btn-success w-25" style={{marginRight:'5px'}} onClick={(e)=>{
@@ -282,9 +305,9 @@ export default function Busmap(){
                     </div>
                 </div>
             </div>
-            <nav class="navbar navbar-light bg-light">
-                <a class="navbar-brand d-block" href="https://www.spatialgeolab.com/" target="blank">
-                    <img className="img-fluid " src="https://scontent.ftpe4-1.fna.fbcdn.net/v/t39.30808-6/340133514_716381103617350_8908784504811723853_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ODQ7DVjEt0YAX9KgQ0g&_nc_ht=scontent.ftpe4-1.fna&oh=00_AfA1CD5-xj2NaqL-Pdf-PO698QqZU2jHgC7SQrG1nVooww&oe=653708C6" width="30" height="30" class="d-inline-block align-top" alt=""/>
+            <nav class="navbar navbar-light bg-light justify-content-center">
+                <a class="navbar-brand" href="https://www.spatialgeolab.com/" target="blank">
+                    <img className="img-fluid " src="/128x128.png" width="30" height="30" class="d-inline-block align-top" alt=""/>
                     GeoLab空間資訊實驗室製作維護
                 </a>
             </nav>

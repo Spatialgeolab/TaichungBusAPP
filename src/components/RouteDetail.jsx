@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect,useState,useRef} from 'react'
-export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef,inputBus}) => {
+export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef,inputBus}) => {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [dateNow,setDateNow]=useState(new Date())
     const prevRouteDetail = useRef(routeDetail);
@@ -23,6 +23,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
       }, [lastUpdated,dateNow]);
     //路線資訊更新hook
     useEffect(()=>{
+        console.log(direction)
         setLastUpdated(new Date());
         queryRouteDetail(inputBus,direction)
       },[direction])
@@ -34,7 +35,7 @@ export const RouteDetail = ({routeDetail,queryRouteDetail,direction,stops,mapRef
         let map = mapRef.current
         if (map){
             console.log(PositionLat,PositionLon)
-            map.setView([PositionLat, PositionLon],25);
+            map.setView([PositionLat, PositionLon],25,{animate: true,duration:1.3});
         }
     }
   return (
