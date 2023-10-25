@@ -161,7 +161,9 @@ export default function Busmap(){
         let station = stopName
         // 讀取檔案為異步處理會回傳promise物件
         const getRouteList= async (routeName,direction)=>{
-            const response = await axios.get('/TaichungRouteList.json');
+            const response = await axios({
+                    method: 'get',
+                    url: 'TaichungRouteList.json'})
             const data = response.data.filter(item => item.RouteName.Zh_tw === routeName);
             const routeDirection = direction === 0 ? data[0].DepartureStopNameZh : data[0].DestinationStopNameZh;
             return routeDirection;
