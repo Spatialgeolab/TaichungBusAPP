@@ -161,7 +161,7 @@ export default function Busmap(){
         let station = stopName
         // 讀取檔案為異步處理會回傳promise物件
         const getRouteList= async (routeName,direction)=>{
-            const response = await axios.get('TaichungBusAPP/TaichungRouteList.json');
+            const response = await axios.get('/TaichungRouteList.json');
             const data = response.data.filter(item => item.RouteName.Zh_tw === routeName);
             const routeDirection = direction === 0 ? data[0].DepartureStopNameZh : data[0].DestinationStopNameZh;
             return routeDirection;
@@ -305,12 +305,6 @@ export default function Busmap(){
                     </div>
                 </div>
             </div>
-            <nav class="navbar navbar-light bg-light justify-content-center">
-                <a class="navbar-brand" href="https://www.spatialgeolab.com/" target="blank">
-                    <img className="img-fluid " src="/128x128.png" width="30" height="30" class="d-inline-block align-top" alt=""/>
-                    GeoLab空間資訊實驗室製作維護
-                </a>
-            </nav>
         </>
     )
 }
