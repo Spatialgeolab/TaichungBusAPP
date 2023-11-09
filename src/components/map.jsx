@@ -10,9 +10,9 @@ import RouteNav from "./RouteNav";
 import Button from 'react-bootstrap/Button';
 export default function Busmap(){
     const location = useLocation();
-    const routeUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Shape/City/Taichung/'
-    const stopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/Taichung/'
-    const busUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/Taichung/'
+    const routeUrl = 'https://tdx.transportdata.tw/api/basic/v2/Bus/Shape/City/Taichung/'
+    const stopUrl = 'https://tdx.transportdata.tw/api/basic/v2/Bus/StopOfRoute/City/Taichung/'
+    const busUrl = 'https://tdx.transportdata.tw/api/basic/v2/Bus/RealTimeByFrequency/City/Taichung/'
     const routeListUrl = 'https://tdx.transportdata.tw/api/basic/v2/Bus/Route/City/Taichung?$format=JSON'
     const routeDetailUrl =`https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung/`
     // 自定義icon
@@ -239,7 +239,7 @@ export default function Busmap(){
                                 addBusLocation={addBusLocation}
                                 routeListUrl={routeListUrl}
                                 token={token}/>
-                            <RouteNav setDirection={setDirection} />    
+                            <RouteNav setDirection={setDirection} direction={direction} />    
                             <Routes>
                                 <Route path="/" element={<RouteDetail routeDetail={routeDetail} direction={direction} queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
                                 <Route path="/inbound" element={<RouteDetail routeDetail={routeDetail} direction={direction} queryRouteDetail={queryRouteDetail} stops={stops} mapRef={mapRef} inputBus={inputBus}/>} />
