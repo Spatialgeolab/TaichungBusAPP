@@ -230,8 +230,9 @@ export default function Busmap(){
                 <h1 className="text-dark d-block w-100 text-center">台中市即時公車地圖</h1>
             </nav>
             <div className="container-fluid">
-                <div class="row ">
-                    <div class="col-4">
+                {/* 響應式設計 > */}
+                <div class="row flex-column-reverse flex-sm-row">
+                    <div class="col-12 col-sm-4">
                         <div className="container">
                             <SearchBox
                                 inputBus={inputBus}
@@ -246,7 +247,7 @@ export default function Busmap(){
                             </Routes>
                         </div>
                     </div>
-                    <div class="col-8">
+                    <div class="col-12 col-sm-8">
                         <div className="main-content">
                             <MapContainer  center={[24.14427284629348, 120.67621054884772]} zoom={13} ref={mapRef}>
                                 <TileLayer
