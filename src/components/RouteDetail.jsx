@@ -1,6 +1,9 @@
 import React from 'react'
 import { useEffect,useState,useRef} from 'react'
-export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef,inputBus}) => {
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons'
+import './RouteDetail.css'
+export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef,inputBus,token}) => {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [dateNow,setDateNow]=useState(new Date())
     const prevRouteDetail = useRef(routeDetail);
@@ -8,11 +11,12 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
     //定時器更新hook
     useEffect(() => {
         // 定義更新計時器
-        console.log('數據更新')
         const updateInterval = 1000; // 每秒更新時間
         const timer = setTimeout(() => {
         //倒數30秒調用setLastUpdated達到更新數據
         if(30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)<=0){
+            queryRouteDetail(inputBus,direction)
+            console.log('倒數完畢-數據更新')
             setLastUpdated(new Date());
              }
         // console.log('數據更新')
@@ -47,7 +51,7 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
         </h3>
         <ul className='list-group '>
             <li className="list-group-item route-detail-header">
-                <span className='bg-dark badge ' >站序</span>
+                <span className='bg-dark badge '>站序</span>
                 <span className='bg-dark badge '>簡碼</span>
                 <span className='bg-dark badge '>站名</span>
                 <span className='bg-dark badge '>預估時間</span>
@@ -56,7 +60,7 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
             {routeDetail.map((item)=>{
                     return (
                     <li className="route-detail-header list-group-item ">
-                        <span className=''>{item.StopSequence}</span>
+                        <span className=''><FontAwesomeIcon onClick={(e)=>console.log(e.target)} icon={faStar} className='favoriteIcon'></FontAwesomeIcon>{item.StopSequence}</span>
                         <span className='flex-md-wrap align-items-start w-10'>{item.StopID }</span>
                         <span className='item-stop-name flex-md-wrap' onClick={routeStopsSearch}>{item.StopName}</span>
                         {/* 透過剩餘到站時間進行樣式變化 */}
@@ -82,7 +86,8 @@ export const RouteDetail = ({routeDetail,direction,queryRouteDetail,stops,mapRef
              )
             } 
         </ul>
-        <div>{(()=>{
+        <div>
+            {(()=>{
             let timeCountDown=30-Math.floor(Math.abs(lastUpdated.getTime()-dateNow.getTime())/1000)
             return(
                 <div style={{margin:'10px'}}>

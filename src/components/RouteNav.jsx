@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route,Link,NavLink,useLocation} from 'react-router-dom'
+import {Link,useLocation} from 'react-router-dom'
 import Button from 'react-bootstrap/Button';
 const RouteNav =({setDirection}) =>{
   const location = useLocation();

@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import { useState,useRef,useEffect } from 'react';
 import axios from 'axios';
-export default function SearchBox ({ inputBus, setInputBus, addBusLocation,routeListUrl,token}){
+export default function SearchBox ({ inputBus, setInputBus, addBusLocation}){
   const [routeList,setRouteList]=useState([])
   const [routeFilter,setRouteFilter]=useState([])
   const [routeQueryId,setRouteQueryId]=useState(inputBus)
@@ -26,7 +26,6 @@ export default function SearchBox ({ inputBus, setInputBus, addBusLocation,route
       refRouteList.current.style.display='none'
   }
   const showList=()=>{
-    setInputBus(routeQueryId)
     let routeListFilter=routeList.filter((item)=>{
       return regex.test(item.RouteID)
     })
@@ -44,17 +43,27 @@ export default function SearchBox ({ inputBus, setInputBus, addBusLocation,route
     refRouteList.current.style.display='none'
   }
   // query路線資訊&顯示路線資訊
-  useEffect(()=>{showList();console.log('執行showList()')},[routeQueryId])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      showList();
+      console.log('執行showList()')
+    }, 500);
+      return ()=>{console.log('clear timer');clearTimeout(timer)}}
+      ,[routeQueryId])
+
+
   useEffect(()=>{getRouteList();
-  console.log('執行getRouteList()取的靜態路線資料')},[])
+      console.log('執行getRouteList()取的靜態路線資料')
+    },[])
   return (
     
     <div className="form-outline">
       <form onSubmit={addBusLocation} className='row'>
         <div className="form-floating">
-          <input type="text" className='form-control' id='typeText' value={inputBus} onChange={(e)=>setRouteQueryId(e.target.value)}
-           onFocus={()=>{setInputBus('')}} placeholder="1"/>
-          <label className="text-center" for="typeText">輸入路線</label>
+          <input type="text" className='form-control' id='typeText' value={routeQueryId}
+            onChange={(e) => setRouteQueryId(e.target.value)}
+            onFocus={() => { setRouteQueryId('') }} onKeyDown={(e) => { if (e.key === 'Enter') { setInputBus(e.target.value) } } }/>
+          <label className="text-center" for="typeText">請輸入公車路線</label>
         </div>
       </form>
         <ul className='list-group list-group-light route-list-item w-100 ' ref={refRouteList}>
