@@ -1,239 +1,235 @@
 .leaflet-container {
-    width: 100%;
-    height: 85vh;
-    z-index: 10;
-    border: 2px solid #ccc;
-  }
-  /* Title */
-nav h1 {
-    font-weight: bolder;
+  width: 100%;
+  height: 85vh;
+  z-index: 10;
+  border: 2px solid #ccc;
 }
-  /*  */
+/* Title */
+nav h1 {
+  font-weight: bolder;
+}
+/*  */
 .SearchBox {
-    width: 500px;
-    height: auto;
-    background-color: bisque;
-    position: absolute;
-    top: 50px; /* 調整上邊距 */
-    right: 20px; /* 調整左邊距 */
-    background-color: white;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 100;
+  width: 500px;
+  height: auto;
+  background-color: bisque;
+  position: absolute;
+  top: 50px; /* 調整上邊距 */
+  right: 20px; /* 調整左邊距 */
+  background-color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 100;
 }
 .route-nav {
-    color: white;
-    width: 400px;
-    height: auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-    z-index: 50;
-    display: flex;
-    justify-content: space-around;
-    
+  color: white;
+  width: 400px;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
 }
 .route-nav div {
-    background-color: skyblue;
-    width: 100px;
-    height:auto;
-    line-height: 50px;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
+  background-color: skyblue;
+  width: 100px;
+  height: auto;
+  line-height: 50px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
 }
 .route-content {
-    width: auto;
-    height: 400px;
-    background-color: bisque;
-    background-color: white;
-    padding: 10px;
-    padding-top: 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 50;
-    overflow: scroll;
+  width: auto;
+  height: 400px;
+  background-color: bisque;
+  background-color: white;
+  padding: 10px;
+  padding-top: 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+  overflow: scroll;
 }
 h3 {
-    text-align: center;
-    margin: 10px;
-    display: block;
-    /* background-color: #; */
-    /* color: aliceblue; */
+  text-align: center;
+  margin: 10px;
+  display: block;
+  /* background-color: #; */
+  /* color: aliceblue; */
 }
 .route-content ul:nth-child(2) {
-    top: 0px;
-    width: auto;
-    position: sticky;
-    text-align: center;
-    margin: 10px;
-    background-color: bisque;
+  top: 0px;
+  width: auto;
+  position: sticky;
+  text-align: center;
+  margin: 10px;
+  background-color: bisque;
 }
-.platenumb{
-    font-size: 10px;
-    width: 15%;
+.platenumb {
+  font-size: 10px;
+  width: 15%;
 }
 .main-content {
-    position:relative
+  position: relative;
 }
 .route-detail-header {
-    margin: 5px;
-    display: flex;
+  margin: 5px;
+  display: flex;
 }
 
-.route-detail-header span{
-    padding: 10px;
-    display: block;
-    /* border: 1px solid #ccc; */
-    border-radius: 5px;
-    /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); */
+.route-detail-header span {
+  padding: 10px;
+  display: block;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
+  /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); */
 }
 ul {
-    padding: 0;
-    margin-top: 10px;
+  padding: 0;
+  margin-top: 10px;
 }
 
-.route-detail-header span:nth-child(1){
-    width: 15%;
+.route-detail-header span:nth-child(1) {
+  width: 15%;
 }
-.route-detail-header span:nth-child(2){
-    width: 15%;
+.route-detail-header span:nth-child(2) {
+  width: 15%;
 }
-.route-detail-header span:nth-child(3){
-    width: 35%;
+.route-detail-header span:nth-child(3) {
+  width: 35%;
 }
-.route-detail-header span:nth-child(4){
-    width: 20%;
+.route-detail-header span:nth-child(4) {
+  width: 20%;
 }
-.route-detail-header span:nth-child(5){
-    width: 20%;
+.route-detail-header span:nth-child(5) {
+  width: 20%;
 }
-.route-detail-header span{
-    padding: 3px;
-    margin-right: 1px;
+.route-detail-header span {
+  padding: 3px;
+  margin-right: 1px;
 }
 
-
-  
 .route-detail-header {
-padding: 10px;
-flex: 1;
-display: flex;
-justify-content: space-between;
-align-items: center;
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
 
 /* 時間進度條 */
-.progress{
-    background-color: blue;
-    height: 5px;
-    transition: 0.5s;
+.progress {
+  background-color: blue;
+  height: 5px;
+  transition: 0.5s;
 }
 
 /* 路線列表 */
-.route-list{
-    display: none;
-    max-height: 85vh;
-    display: scroll;
+.route-list {
+  display: none;
+  max-height: 85vh;
+  display: scroll;
 }
-.route-list>li{
-    display: flex;
-    justify-content:left
+.route-list > li {
+  display: flex;
+  justify-content: left;
 }
-.route-list>li>div:first-child{
-    padding-right: 20px;
-    border:1px solid #ccc;
-    width: 50px;
+.route-list > li > div:first-child {
+  padding-right: 20px;
+  border: 1px solid #ccc;
+  width: 50px;
 }
-.route-list>li>div:nth-child(2){
-    padding-right: 20px;
-    border:1px solid #ccc;
-    width: 300px;
+.route-list > li > div:nth-child(2) {
+  padding-right: 20px;
+  border: 1px solid #ccc;
+  width: 300px;
 }
 /* popup其他內容 */
-.station-routes-wrap{
-    display: none;
-    max-height: 80vh;
-    overflow: scroll;
+.station-routes-wrap {
+  display: none;
+  max-height: 80vh;
+  overflow: scroll;
 }
-.station-routes-list{
-    display: flex;
-    justify-content: left;
+.station-routes-list {
+  display: flex;
+  justify-content: left;
 }
-.station-routes-list-item{
-    margin-right: 5px;
-    border-left: 1px solid #ccc;
-    align-content: center;
+.station-routes-list-item {
+  margin-right: 5px;
+  border-left: 1px solid #ccc;
+  align-content: center;
 }
-.leaflet-popup-content-wrapper{
-    max-height: 400px;
+.leaflet-popup-content-wrapper {
+  width: 300px;
+  max-height: 500px;
+  min-width: 10vw;
 }
 
-.stop-info{
-    font-size: 1.2rem;
-    padding: 5px;
-    text-align: center;
-    
+.stop-info {
+  font-size: 1.2rem;
+  padding: 5px;
+  text-align: center;
 }
-.other-route-list{
-    max-height: 200px;
-    overflow: scroll;
+.other-route-list {
+  max-height: 200px;
+  overflow: scroll;
 }
 
 /* 搜尋框bootstrap5 custom */
-.list-group{
-    max-height: 100vh;
-    overflow: scroll;
+.list-group {
+  max-height: 100vh;
+  overflow: scroll;
 }
-.list-group:first-of-type{
-    max-height: 65vh;
-    overflow:auto
+.list-group:first-of-type {
+  max-height: 65vh;
+  overflow: auto;
 }
 
-.form-outline{
-    position: relative;
+.form-outline {
+  position: relative;
 }
-.form-floating > label{
-    left: 10px;
+.form-floating > label {
+  left: 10px;
 }
-.route-list-item{
-    position: absolute;
-    background-color: #ccc;
-    z-index: 50;
-    top: 47px;
+.route-list-item {
+  position: absolute;
+  background-color: #ccc;
+  z-index: 50;
+  top: 47px;
 }
 /* 更改滾動條 */
 ::-webkit-scrollbar {
-    width: 8px;
-    height:8px
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgb(201, 189, 189);
-    border-radius: 8px;
+  -webkit-box-shadow: inset 0 0 6px rgb(201, 189, 189);
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background-color:#fff;
-    -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+  border-radius: 8px;
+  background-color: #fff;
+  -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 
 /*  */
-.list-group-item{
-    cursor: default;
+.list-group-item {
+  cursor: default;
 }
-.item-stop-name{
-    cursor: pointer;
+.item-stop-name {
+  cursor: pointer;
 }
 
 /* 路線資訊框header */
-.badge{
-    font-size: 15px;
-    font-weight: bold;
-
+.badge {
+  font-size: 15px;
+  font-weight: bold;
 }
