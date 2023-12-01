@@ -7,8 +7,7 @@ const busApi = createApi({
     baseUrl: "https://tdx.transportdata.tw/api/basic/v2/Bus/",
     // 設置token
     prepareHeaders: (preHeader, { getState }) => {
-      // 獲取使用者token
-      // console.log("getState()", getState(), getState);
+      // 獲取使用者token getState()方法可以取得react-redux的狀態
       const token = getState().token.token;
       if (token) {
         console.log("獲取使用者token");
@@ -51,6 +50,12 @@ const busApi = createApi({
           return busMapApi.routeDetail + queryString;
         },
       }),
+      getBusRouteDetailByStop: build.query({
+        query(Stop) {
+          const queryString = `?$format=JSON&$filter=StopName/Zh_tw eq '${Stop}'`;
+          return busMapApi.routeDetail + queryString;
+        },
+      }),
     };
   },
 });
@@ -63,6 +68,7 @@ export const {
   useGetBusStopQuery,
   useGetBusRouteListQuery,
   useGetBusRouteDetailQuery,
+  useGetBusRouteDetailByStopQuery,
 } = busApi;
 
 export default busApi;
