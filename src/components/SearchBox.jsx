@@ -1,5 +1,4 @@
 // @ts-nocheck
-import "bootstrap/dist/css/bootstrap.css";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 export default function SearchBox({ inputBus, setInputBus }) {
@@ -55,14 +54,17 @@ export default function SearchBox({ inputBus, setInputBus }) {
     getRouteList();
     console.log("執行getRouteList()取的靜態路線資料");
   }, []);
+  useEffect(() => {
+    setRouteQueryId(inputBus);
+  }, [inputBus]);
   return (
-    <div className="form-outline">
-      <form className="row">
-        <div className="form-floating">
+    <div className='form-outline'>
+      <form className='row'>
+        <div className='form-floating'>
           <input
-            type="text"
-            className="form-control"
-            id="typeText"
+            type='text'
+            className='form-control'
+            id='typeText'
             value={routeQueryId}
             onChange={(e) => {
               setRouteQueryId(e.target.value);
@@ -78,18 +80,18 @@ export default function SearchBox({ inputBus, setInputBus }) {
               }
             }}
           />
-          <label className="text-center" for="typeText">
+          <label className='text-center' for='typeText'>
             請輸入公車路線
           </label>
         </div>
       </form>
-      <ul className="list-group list-group-light route-list-item w-100 " id="route-list-ul">
+      <ul className='list-group list-group-light route-list-item w-100 ' id='route-list-ul'>
         {/* 動態創建搜尋路線資訊表 */}
         {isShowRouteList &&
           routeFilter.map((routeItem) => {
             return (
               <li
-                className="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-info"
+                className='list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-info'
                 routeId={routeItem.RouteName}
                 onClick={searchByClick}>
                 <div

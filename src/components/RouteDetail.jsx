@@ -2,6 +2,8 @@ import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
 import "./RouteDetail.css";
 export const RouteDetail = ({
   formattedTime,
@@ -11,6 +13,9 @@ export const RouteDetail = ({
   updateData,
   stops,
   setIsUpdateData,
+  inputBus,
+  busFavoriteItem,
+  addFavoriteRoute,
 }) => {
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [dateNow, setDateNow] = useState(new Date());
@@ -59,31 +64,41 @@ export const RouteDetail = ({
       <div style={{ margin: "10px" }}>
         <span>{`剩餘更新時間: ${timeCountDown}`}</span>
         {/* 透過時間縮減寬度 */}
-        <div className="progress" style={{ width: `${(timeCountDown / 30) * 100}%` }}></div>
+        <div
+          className='progress'
+          style={{ color: "blue", width: `${(timeCountDown / 30) * 100}%` }}></div>
       </div>
     );
   };
+
   return (
-    <div className="border border-3">
-      <h3 className="badge text-bg-warning d-block">
+    <div className='border border-5'>
+      <h3 className='badge text-bg-warning d-block'>
+        <FontAwesomeIcon
+          icon={busFavoriteItem.some((item) => item.RouteId === inputBus) ? faStarSolid : faStar}
+          onClick={() => {
+            // 單獨調用會自行船event造成錯誤 onClick={addFavoriteRoute}
+            addFavoriteRoute();
+          }}
+        />{" "}
         路線詳細資訊:
         {/* 因路線也有更改只需抓最後一站即可知道方向 */}
         {`${stops.length === 0 ? "" : `往 ${stops[stops.length - 1].StopName}`}`}
       </h3>
-      <ul className="list-group ">
-        <li className="list-group-item route-detail-header">
-          <span className="bg-dark badge ">站序</span>
-          <span className="bg-dark badge ">簡碼</span>
-          <span className="bg-dark badge ">站名</span>
-          <span className="bg-dark badge ">預估時間</span>
-          <span className="bg-dark badge ">進站公車</span>
+      <ul className='list-group'>
+        <li className='list-group-item route-detail-header'>
+          <span className='bg-dark badge'>站序</span>
+          <span className='bg-dark badge'>簡碼</span>
+          <span className='bg-dark badge'>站名</span>
+          <span className='bg-dark badge'>預估時間</span>
+          <span className='bg-dark badge'>進站公車</span>
         </li>
         {routeDetail.map((item) => {
           return (
-            <li className="route-detail-header list-group-item ">
-              <span className="">{item.StopSequence}</span>
-              <span className="flex-md-wrap align-items-start w-10">{item.StopID}</span>
-              <span className="item-stop-name flex-md-wrap" onClick={routeStopsSearch}>
+            <li className='route-detail-header list-group-item '>
+              <span className=''>{item.StopSequence}</span>
+              <span className='flex-md-wrap align-items-start w-10'>{item.StopID}</span>
+              <span className='item-stop-name flex-md-wrap' onClick={routeStopsSearch}>
                 {item.StopName}
               </span>
               {/* 透過剩餘到站時間進行樣式變化 */}
@@ -95,7 +110,7 @@ export const RouteDetail = ({
                       ? "danger"
                       : "primary"
                 }`}>
-                <div lang="eta">
+                <div lang='eta'>
                   {item.EstimateTime
                     ? Math.round(item.EstimateTime / 60) + "分"
                     : (() => {
@@ -106,7 +121,7 @@ export const RouteDetail = ({
                       })()}
                 </div>
               </span>
-              <span className="platenumb">
+              <span className='platenumb'>
                 {/* 小於三分鐘顯示進站公車 */}
                 {Number(item.EstimateTime) <= 180 ? item.PlateNumb : ""}
               </span>

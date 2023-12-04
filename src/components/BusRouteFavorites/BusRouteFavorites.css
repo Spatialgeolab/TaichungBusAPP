@@ -1,0 +1,67 @@
+.favorite-container {
+  position: absolute;
+  width: 30%;
+  height: 80%;
+  background-color: beige;
+  margin: auto;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  justify-content: center;
+  flex: column;
+}
+.favorite-container h2 {
+  margin: 15px 50px;
+  font-weight: bold;
+  padding: 2px;
+  border: 8px solid gray;
+  text-align: center;
+  border-radius: 10px;
+  display: block;
+}
+.favorite-ul {
+  display: flex;
+  flex-direction: column;
+}
+.favorite-ul li {
+  list-style-type: none;
+  width: auto;
+  height: 50px;
+  margin: 3px 30px;
+  background-color: aqua;
+  display: flex;
+  align-items: center;
+  border: 2px solid #ccc;
+  text-align: center;
+  border-radius: 10px;
+}
+.favorite-ul li span {
+  font-size: 16px;
+}
+.favorite-ul li span:nth-child(1) {
+  width: 10%;
+  cursor: pointer;
+}
+.favorite-ul li div {
+  display: flex;
+  flex: 1;
+  cursor: pointer;
+}
+.favorite-ul li div span:nth-child(1) {
+  width: 10%;
+}
+.favorite-ul li div span:nth-child(2) {
+  width: 90%;
+}
+/* 關閉按鈕 */
+.close-btn {
+  color: red;
+  margin-left: 10px;
+  margin-top: 10px;
+  background-color: #ccc;
+  width: 20px;
+  height: 20px;
+  display: block;
+  text-align: center;
+}
