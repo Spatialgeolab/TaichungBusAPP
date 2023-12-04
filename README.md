@@ -13,6 +13,8 @@
 - React：用於構建前端應用程式。
 - Leaflet：用於地圖顯示和互動。
 - TDX 台中市公車 API：用於獲取即時公車動態數據。
+- Redux-React 管理大部分公車狀態
+- RTK-Query 封裝TDX的API請求
 
 ## 安裝和運行
 - install the denpendency
