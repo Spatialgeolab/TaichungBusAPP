@@ -79,13 +79,13 @@ h3 {
   position: relative;
 }
 .route-detail-header {
-  margin: 5px;
   display: flex;
+  margin: 5px;
 }
 
 .route-detail-header span {
   padding: 10px;
-  display: block;
+  /* display: block; */
   /* border: 1px solid #ccc; */
   border-radius: 5px;
   /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); */
@@ -132,7 +132,6 @@ ul {
 
 /* 路線列表 */
 .route-list {
-  display: none;
   max-height: 85vh;
   display: scroll;
 }

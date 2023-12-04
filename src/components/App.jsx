@@ -1,15 +1,14 @@
 // @ts-nocheck
-import axios from "axios";
+import "bootstrap/dist/css/bootstrap.css";
+import "../index.css";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Route, Routes } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import SearchBox from "./SearchBox";
 import RouteDetail from "./RouteDetail";
 import RouteNav from "./RouteNav";
-import OtherRoute from "./OtherRoute";
 import Lmap from "./Lmap";
-import { customIcon } from "./api/customIcon";
+import BusRouteFavorites from "./BusRouteFavorites/BusRouteFavorites";
 import { setBusObj } from "./store/busSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -21,10 +20,11 @@ import {
 } from "./store/busApi";
 import { useGetTokenQuery } from "./api/authApi";
 import { authSetToken } from "./store/authSlice";
+import { addBusFavoriteItem } from "./store/busSlice.jsx";
 export default function App() {
   // useSelector() 載入state數據
   const { token } = useSelector((state) => state.token);
-  const { busPosition, busDetail, busRoute, busRouteList, busStops } = useSelector(
+  const { busPosition, busDetail, busRoute, busRouteList, busStops, busFavoriteItem } = useSelector(
     (state) => state.bus
   );
   const dispatch = useDispatch();
@@ -37,6 +37,7 @@ export default function App() {
   const lineOptions = { color: "blue", dashArray: "10, 10" };
   const [isGetToken, setisGetToken] = useState(Boolean(token));
   const [isUpdateData, setIsUpdateData] = useState(true);
+  const [showFavorite, setShowFavorite] = useState(false);
   if (!isGetToken) {
     console.log("沒有token，進行獲取");
     const { data: tokenData, isLoading, isFetching } = useGetTokenQuery();
@@ -145,14 +146,43 @@ export default function App() {
     const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
     return formattedTime;
   });
-
+  //添加收藏路線
+  const addFavoriteRoute = (RouteId = inputBus) => {
+    console.log(
+      "test",
+      RouteId,
+      `${busStops[0].StopName}-${busStops[busStops.length - 1].StopName}`
+    );
+    dispatch(
+      addBusFavoriteItem({
+        busFavoriteItem: {
+          RouteId: RouteId,
+          RouteName: `${busStops[0].StopName}-${busStops[busStops.length - 1].StopName}`,
+        },
+      })
+    );
+  };
   return (
     <>
       {/* 獲取到token後再進行mount */}
       {isGetToken && (
         <>
           <nav class='navbar navbar-light bg-light'>
-            <h1 className='text-dark d-block w-100 text-center'>台中市即時公車地圖</h1>
+            <h1
+              className='text-dark d-block w-100 text-center'
+              style={{ backgroundColor: "yellowgreen" }}>
+              台中市即時公車地圖
+            </h1>
+            <button className='favorite-btn' onClick={() => setShowFavorite(true)}>
+              我的收藏路線
+            </button>
+            {showFavorite && (
+              <BusRouteFavorites
+                setShowFavorite={setShowFavorite}
+                busFavoriteItem={busFavoriteItem}
+                addFavoriteRoute={addFavoriteRoute}
+                setInputBus={setInputBus}></BusRouteFavorites>
+            )}
           </nav>
           <div className='container-fluid'>
             {/* 響應式設計 > */}
@@ -174,6 +204,8 @@ export default function App() {
                           stops={busStops}
                           formattedTime={formattedTime}
                           setIsUpdateData={setIsUpdateData}
+                          busFavoriteItem={busFavoriteItem}
+                          addFavoriteRoute={addFavoriteRoute}
                         />
                       }
                     />
@@ -189,6 +221,8 @@ export default function App() {
                           stops={busStops}
                           formattedTime={formattedTime}
                           setIsUpdateData={setIsUpdateData}
+                          busFavoriteItem={busFavoriteItem}
+                          addFavoriteRoute={addFavoriteRoute}
                         />
                       }
                     />
