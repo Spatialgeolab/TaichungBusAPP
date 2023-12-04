@@ -6,12 +6,13 @@ const busSlice = createSlice({
   initialState: {
     busId: null,
     busPosition: [],
-    busDetail: [],          
+    busDetail: [],
     busRoute: [],
     busRouteList: [],
     busStops: [],
     busDirection: 0,
     busListAll: [],
+    busFavoriteItem: JSON.parse(localStorage.getItem("busFavoriteItem")) || [],
   },
   reducers: {
     setBusObj(state, action) {
@@ -27,9 +28,20 @@ const busSlice = createSlice({
     setBusListAll(state, action) {
       state.busListAll = action.payload.busListAll;
     },
+    addBusFavoriteItem(state, action) {
+      const newFavoriteRoute = action.payload.busFavoriteItem;
+      if (state.busFavoriteItem.some((item) => item.RouteId === newFavoriteRoute.RouteId)) {
+        state.busFavoriteItem = state.busFavoriteItem.filter(
+          (item) => item.RouteId !== newFavoriteRoute.RouteId
+        );
+      } else {
+        state.busFavoriteItem.push(action.payload.busFavoriteItem);
+      }
+      localStorage.setItem("busFavoriteItem", JSON.stringify(state.busFavoriteItem));
+    },
   },
 });
 
 // creatSlice 會自動設置type
-export const { setBusObj, setBusListAll } = busSlice.actions;
+export const { setBusObj, setBusListAll, addBusFavoriteItem } = busSlice.actions;
 export const { reducer: busReducer } = busSlice;
