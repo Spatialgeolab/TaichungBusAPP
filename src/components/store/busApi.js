@@ -10,7 +10,6 @@ const busApi = createApi({
       // 獲取使用者token getState()方法可以取得react-redux的狀態
       const token = getState().token.token;
       if (token) {
-        console.log("獲取使用者token");
         preHeader.set("Authorization", `Bearer ${token}`);
       }
       return preHeader;
