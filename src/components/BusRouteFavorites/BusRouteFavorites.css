@@ -2,7 +2,8 @@
   position: absolute;
   width: 30%;
   height: 80%;
-  background-color: beige;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 2rem;
   margin: auto;
   left: 0;
   top: 0;
@@ -10,16 +11,51 @@
   right: 0;
   justify-content: center;
   flex: column;
+  overflow: hidden;
 }
-.favorite-container h2 {
-  margin: 15px 50px;
-  font-weight: bold;
-  padding: 2px;
-  border: 8px solid gray;
+/* Media query for mobile devices */
+@media (max-width: 767px) {
+  .favorite-container {
+    width: 80%;
+    height: 60%;
+  }
+}
+/* header */
+.fav-header {
+  background-color: azure;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+.fav-header div {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.fav-header div span {
+  font-weight: bolder;
+  font-size: 1.5rem;
+  padding-left: 10px;
   text-align: center;
-  border-radius: 10px;
-  display: block;
+  margin: 10px;
+  line-height: 1.5rem;
 }
+.fav-header div span:nth-child(2) {
+  font-size: 0.7rem;
+  color: gray;
+  text-align: center;
+  line-height: 0.9rem;
+  display: block;
+  padding: 40px 10px 0 0;
+}
+.close-btn {
+  width: 8%;
+  height: 8%;
+  margin-left: 10px;
+  cursor: pointer;
+}
+/*  */
 .favorite-ul {
   display: flex;
   flex-direction: column;
@@ -29,7 +65,7 @@
   width: auto;
   height: 50px;
   margin: 3px 30px;
-  background-color: aqua;
+  background-color: rgb(255, 238, 0);
   display: flex;
   align-items: center;
   border: 2px solid #ccc;
@@ -37,7 +73,8 @@
   border-radius: 10px;
 }
 .favorite-ul li span {
-  font-size: 16px;
+  font-size: 1rem;
+  font-weight: bold;
 }
 .favorite-ul li span:nth-child(1) {
   width: 10%;
@@ -53,15 +90,4 @@
 }
 .favorite-ul li div span:nth-child(2) {
   width: 90%;
-}
-/* 關閉按鈕 */
-.close-btn {
-  color: red;
-  margin-left: 10px;
-  margin-top: 10px;
-  background-color: #ccc;
-  width: 20px;
-  height: 20px;
-  display: block;
-  text-align: center;
 }
