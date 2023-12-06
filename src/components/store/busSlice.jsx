@@ -39,9 +39,13 @@ const busSlice = createSlice({
       }
       localStorage.setItem("busFavoriteItem", JSON.stringify(state.busFavoriteItem));
     },
+    clearBusFavoriteItem(state, action) {
+      state.busFavoriteItem = [];
+    },
   },
 });
 
 // creatSlice 會自動設置type
-export const { setBusObj, setBusListAll, addBusFavoriteItem } = busSlice.actions;
+export const { setBusObj, setBusListAll, addBusFavoriteItem, clearBusFavoriteItem } =
+  busSlice.actions;
 export const { reducer: busReducer } = busSlice;
