@@ -2,6 +2,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "../index.css";
 import "leaflet/dist/leaflet.css";
+import Button from "react-bootstrap/Button";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Route, Routes } from "react-router-dom";
 import SearchBox from "./SearchBox";
@@ -9,7 +10,7 @@ import RouteDetail from "./RouteDetail";
 import RouteNav from "./RouteNav";
 import Lmap from "./Lmap";
 import BusRouteFavorites from "./BusRouteFavorites/BusRouteFavorites";
-import { setBusObj } from "./store/busSlice";
+import { setBusObj, addBusFavoriteItem, clearBusFavoriteItem } from "./store/busSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {
   useGetBusPositionQuery,
@@ -20,7 +21,6 @@ import {
 } from "./store/busApi";
 import { useGetTokenQuery } from "./api/authApi";
 import { authSetToken } from "./store/authSlice";
-import { addBusFavoriteItem } from "./store/busSlice.jsx";
 export default function App() {
   // useSelector() 載入state數據
   const { token } = useSelector((state) => state.token);
@@ -148,11 +148,6 @@ export default function App() {
   });
   //添加收藏路線
   const addFavoriteRoute = (RouteId = inputBus) => {
-    console.log(
-      "test",
-      RouteId,
-      `${busStops[0].StopName}-${busStops[busStops.length - 1].StopName}`
-    );
     dispatch(
       addBusFavoriteItem({
         busFavoriteItem: {
@@ -162,26 +157,24 @@ export default function App() {
       })
     );
   };
+  //清除收藏路線
+  const clearFavoriteRoute = () => {
+    dispatch(clearBusFavoriteItem({}));
+  };
   return (
     <>
       {/* 獲取到token後再進行mount */}
       {isGetToken && (
         <>
           <nav class='navbar navbar-light bg-light'>
-            <h1
-              className='text-dark d-block w-100 text-center'
-              style={{ backgroundColor: "yellowgreen" }}>
-              台中市即時公車地圖
-            </h1>
-            <button className='favorite-btn' onClick={() => setShowFavorite(true)}>
-              我的收藏路線
-            </button>
+            <h1 className='text-dark d-block w-100 text-center'>台中市即時公車地圖</h1>
             {showFavorite && (
               <BusRouteFavorites
                 setShowFavorite={setShowFavorite}
                 busFavoriteItem={busFavoriteItem}
                 addFavoriteRoute={addFavoriteRoute}
-                setInputBus={setInputBus}></BusRouteFavorites>
+                setInputBus={setInputBus}
+                clearFavoriteRoute={clearFavoriteRoute}></BusRouteFavorites>
             )}
           </nav>
           <div className='container-fluid'>
@@ -189,6 +182,9 @@ export default function App() {
             <div class='row flex-column-reverse flex-sm-row'>
               <div class='col-12 col-sm-4'>
                 <div className='container'>
+                  <Button onClick={() => setShowFavorite(true)} variant='danger'>
+                    我的收藏路線
+                  </Button>
                   <SearchBox inputBus={inputBus} setInputBus={setInputBus} />
                   <RouteNav setDirection={setDirection} direction={direction} />
                   <Routes>
