@@ -5,8 +5,17 @@ const backDropRoot = document.getElementById("bg-root");
 const BackDrop = (props) => {
   const { setShowFavorite } = props;
   return ReactDOM.createPortal(
-    <div className='bg-drop' onClick={() => setShowFavorite(false)}>
-      {props.children}
+    <div
+      className='bg-drop'
+      onClick={(e) => {
+        setShowFavorite(false);
+      }}>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}>
+        {props.children}
+      </div>
     </div>,
     backDropRoot
   );
