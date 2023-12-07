@@ -86,7 +86,7 @@ export const RouteDetail = ({
         {`${stops.length === 0 ? "" : `往 ${stops[stops.length - 1].StopName}`}`}
       </h3>
       <ul className='list-group'>
-        <li className='list-group-item route-detail-header'>
+        <li className='list-group-item route-detail-header' key='ul-head'>
           <span className='bg-dark badge'>站序</span>
           <span className='bg-dark badge'>簡碼</span>
           <span className='bg-dark badge'>站名</span>
@@ -95,7 +95,7 @@ export const RouteDetail = ({
         </li>
         {routeDetail.map((item) => {
           return (
-            <li className='route-detail-header list-group-item '>
+            <li className='route-detail-header list-group-item ' key={item.StopID}>
               <span className=''>{item.StopSequence}</span>
               <span className='flex-md-wrap align-items-start w-10'>{item.StopID}</span>
               <span className='item-stop-name flex-md-wrap' onClick={routeStopsSearch}>

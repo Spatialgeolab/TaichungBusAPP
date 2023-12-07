@@ -8,7 +8,7 @@ const OtherRoute = ({ formattedTime, inputBus, setInputBus, stop }) => {
   const [otherRouteDeatil, setOtherRouteDeatil] = useState([]);
   //站點其他路線查詢
   const { data: RouteDetailData, status } = useGetBusRouteDetailByStopQuery(stopName);
-  console.log(RouteDetailData, status);
+  console.log(RouteDetailData, status, stop.StopName);
   const queryStationRoute = async (routeName, direction) => {
     // 讀取檔案為異步處理會回傳promise物件
     const response = await axios({
@@ -20,7 +20,6 @@ const OtherRoute = ({ formattedTime, inputBus, setInputBus, stop }) => {
       direction === 0 ? data[0].DepartureStopNameZh : data[0].DestinationStopNameZh;
     return routeDirection;
   };
-  //TODOS 按鈕其他路線跳轉有問題
   useEffect(() => {
     if (status === "fulfilled") {
       const data = RouteDetailData.map((item) => {
@@ -52,33 +51,36 @@ const OtherRoute = ({ formattedTime, inputBus, setInputBus, stop }) => {
   }, [status]);
   return (
     <div>
-      <div className="stop-info">{stop.StopName}</div>
-      <div className="stop-info">目前路線:{inputBus}</div>
+      <div className='stop-info'>{stop.StopName}</div>
+      <div className='stop-info'>目前路線:{inputBus}</div>
       {/* onClick先透過setStopName紀錄站位名子 */}
       <Button
-        variant="success"
-        className="col-12 p-10 "
+        variant='success'
+        className='col-12 p-10 '
         onClick={(e) => {
+          console.log("設定按鈕");
           setStopName(stop.StopName);
         }}
         StopName={stop.StopName}>
         其他路線
       </Button>
-      <ul className="other-route-list">
+      <ul className='other-route-list'>
         {/* 透過當前stop.StopName(popup)跟目前狀態中的路線資訊比較進行顯示設定 */}
         {otherRouteDeatil.length !== 0 &&
           otherRouteDeatil.map((item) => {
             return (
-              <li className="list-group-item route-detail-header ">
+              <li
+                className='list-group-item route-detail-header '
+                key={item.RouteName + item.RouteDirection}>
                 <span
-                  className="btn btn-success w-25"
+                  className='btn btn-success w-25'
                   style={{ marginRight: "5px" }}
                   onClick={(e) => {
                     setInputBus(item.RouteName);
                   }}>
                   {item.RouteName}
                 </span>
-                <span className="w-50 text-left">{" 往: " + item.RouteDirection}</span>
+                <span className='w-50 text-left'>{" 往: " + item.RouteDirection}</span>
                 <span
                   className={`text-right badge bg-${
                     !item.EstimateTime
