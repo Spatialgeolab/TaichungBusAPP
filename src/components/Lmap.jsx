@@ -48,11 +48,13 @@ const Lmap = ({ propsObj }) => {
       {/* 渲染公車站點 */}
       {busStops.map((stop, index) => (
         <Marker
-          key={index}
           position={[stop.PositionLat, stop.PositionLon]}
-          icon={customIcon.BusStopIcon}>
-          <Popup minWidth={"600px"}>
+          icon={customIcon.BusStopIcon}
+          key={stop.StopName + "M"}>
+          <Popup minWidth={"500px"}>
             <OtherRoute
+              // key避免重複渲染
+              key={stop.StopName}
               inputBus={inputBus}
               stop={stop}
               formattedTime={formattedTime}
