@@ -38,6 +38,14 @@ export default function App() {
   const [isGetToken, setisGetToken] = useState(Boolean(token));
   const [isUpdateData, setIsUpdateData] = useState(true);
   const [showFavorite, setShowFavorite] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+  const handleTouchStart = () => {
+    setIsTouched(true); // Set isTouched to true when touch starts
+  };
+
+  const handleTouchEnd = () => {
+    setIsTouched(false); // Set isTouched to false when touch ends
+  };
   if (!isGetToken) {
     console.log("沒有token，進行獲取");
     const { data: tokenData, isLoading, isFetching } = useGetTokenQuery();
@@ -115,7 +123,8 @@ export default function App() {
     useGetBusStopQuery(inputBus, direction),
   ];
   const updateData = () => {
-    for (let i of busData) {
+    const updateRefetch = [busData[0], busData[1]];
+    for (let i of updateRefetch) {
       i.refetch();
     }
   };
@@ -182,8 +191,13 @@ export default function App() {
             <div class='row flex-column-reverse flex-sm-row'>
               <div class='col-12 col-sm-4'>
                 <div className='container'>
-                  <Button onClick={() => setShowFavorite(true)} variant='danger'>
-                    我的收藏路線
+                  <Button
+                    onTouchStart={() => handleTouchStart(setIsTouched(true))}
+                    onTouchEnd={() => handleTouchEnd(setIsTouched(false))}
+                    onClick={() => setShowFavorite(true)}
+                    variant='danger'
+                    className={isTouched || showFavorite ? "favorite-btn-sm" : `favorite-btn`}>
+                    <span>我的收藏路線</span>
                   </Button>
                   <SearchBox inputBus={inputBus} setInputBus={setInputBus} />
                   <RouteNav setDirection={setDirection} direction={direction} />
