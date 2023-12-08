@@ -11,7 +11,7 @@ const busSlice = createSlice({
     busRouteList: [],
     busStops: [],
     busDirection: 0,
-    busListAll: [],
+    busListAll: JSON.parse(localStorage.getItem("TaichungRouteList")) || [],
     busFavoriteItem: JSON.parse(localStorage.getItem("busFavoriteItem")) || [],
   },
   reducers: {
@@ -27,6 +27,7 @@ const busSlice = createSlice({
     },
     setBusListAll(state, action) {
       state.busListAll = action.payload.busListAll;
+      localStorage.setItem("TaichungRouteList", JSON.stringify(state.busListAll));
     },
     addBusFavoriteItem(state, action) {
       const newFavoriteRoute = action.payload.busFavoriteItem;

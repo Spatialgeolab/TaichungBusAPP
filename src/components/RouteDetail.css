@@ -1,0 +1,9 @@
+.item-stop-name:hover {
+  color: red;
+  font-weight: bolder;
+  transform: scale(1.05);
+}
+.add-favorite:hover {
+  transform: scale(1.3);
+  cursor: pointer;
+}

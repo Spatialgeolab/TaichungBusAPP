@@ -3,19 +3,17 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useGetBusRouteDetailByStopQuery } from "./store/busApi";
+import { useSelector } from "react-redux";
 const OtherRoute = ({ formattedTime, inputBus, setInputBus, stop }) => {
-  const [stopName, setStopName] = useState(""); // 使用useState來維護站位的狀態
+  const [stopName, setStopName] = useState("");
   const [otherRouteDeatil, setOtherRouteDeatil] = useState([]);
   //站點其他路線查詢
   const { data: RouteDetailData, status } = useGetBusRouteDetailByStopQuery(stopName);
-  console.log(RouteDetailData, status, stop.StopName);
-  const queryStationRoute = async (routeName, direction) => {
-    // 讀取檔案為異步處理會回傳promise物件
-    const response = await axios({
-      method: "get",
-      url: "TaichungRouteList.json",
-    });
-    const data = response.data.filter((item) => item.RouteName.Zh_tw === routeName);
+  // 獲取redux中的靜態路線
+  const { busListAll } = useSelector((state) => state.bus);
+  const queryStationRoute = (routeName, direction) => {
+    const data = busListAll.filter((item) => item.RouteName.Zh_tw === routeName);
+    if (data.length === 0) return "數據待更新";
     const routeDirection =
       direction === 0 ? data[0].DepartureStopNameZh : data[0].DestinationStopNameZh;
     return routeDirection;
@@ -34,19 +32,19 @@ const OtherRoute = ({ formattedTime, inputBus, setInputBus, stop }) => {
           RouteDirection: queryStationRoute(item.RouteName.Zh_tw, item.Direction),
         };
       });
+      // 改成Redux先加載靜態路線，因此不需要檢查promise
       // 透過Promise.all確認所有資料處理完畢
-      Promise.all(data.map((item) => item.RouteDirection)).then((res) => {
-        console.log("promiseAll RouteData");
-        console.log(res);
-        // 將原本的promise物件替換成處理好的值
-        let readyData = data.map((item, index) => {
-          item.RouteDirection = res[index];
-          return item;
-        });
-        // 更改狀態進行新一次渲染
-        console.log("readyData->", readyData);
-        setOtherRouteDeatil(readyData);
-      });
+      // Promise.all(data.map((item) => item.RouteDirection)).then((res) => {
+      //   console.log("promiseAll RouteData");
+      //   console.log(res);
+      //   // 將原本的promise物件替換成處理好的值
+      //   let readyData = data.map((item, index) => {
+      //     item.RouteDirection = res[index];
+      //     return item;
+      //   });
+      //   // 更改狀態進行新一次渲染
+      //   console.log("readyData->", readyData);
+      setOtherRouteDeatil(data);
     }
   }, [status]);
   return (

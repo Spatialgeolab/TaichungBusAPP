@@ -16,6 +16,7 @@ export const RouteDetail = ({
   inputBus,
   busFavoriteItem,
   addFavoriteRoute,
+  setShowPopup,
 }) => {
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [dateNow, setDateNow] = useState(new Date());
@@ -52,6 +53,11 @@ export const RouteDetail = ({
       (item) => item.StopName === e.target.innerText
     )[0];
     const map = mapRef.current;
+    // 監聽地圖移動完成
+    map.on("moveend", function () {
+      // console.log("移動完成");
+      setShowPopup(e.target.innerText);
+    });
     if (map) {
       console.log(PositionLat, PositionLon);
       map.setView([PositionLat, PositionLon], 25, { animate: true, duration: 1.3 });
@@ -75,6 +81,7 @@ export const RouteDetail = ({
     <div className='border border-5'>
       <h3 className='badge text-bg-warning d-block'>
         <FontAwesomeIcon
+          className='add-favorite'
           icon={busFavoriteItem.some((item) => item.RouteId === inputBus) ? faStarSolid : faStar}
           onClick={() => {
             // 單獨調用會自行船event造成錯誤 onClick={addFavoriteRoute}

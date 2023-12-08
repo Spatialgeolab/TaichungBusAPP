@@ -1,28 +1,24 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
-export default function SearchBox({ inputBus, setInputBus }) {
+export default function SearchBox({ inputBus, setInputBus, AllRoute }) {
   const [routeFilter, setRouteFilter] = useState([]);
   const [routeQueryId, setRouteQueryId] = useState(inputBus);
   const [isShowRouteList, setIsShowRouteList] = useState(false);
   const routeListAll = useRef();
   const regex = new RegExp(routeQueryId);
   const getRouteList = () => {
-    axios({
-      method: "get",
-      url: "TaichungRouteList.json",
-    }).then((response) => {
-      const data = response.data;
-      routeListAll.current = data.map((item) => {
-        return {
-          RouteID: item.RouteID,
-          Headsign: item.SubRoutes[0].Headsign,
-          RouteName: item.RouteName.Zh_tw,
-        };
-      });
-      routeListAll.current.sort((a, b) => parseInt(a.RouteID) - parseInt(b.RouteID));
-      console.log("routeListAll->", routeListAll.current);
+    if (!AllRoute) return;
+    console.log("test", AllRoute);
+    const data = AllRoute;
+    routeListAll.current = data.map((item) => {
+      return {
+        RouteID: item.RouteID,
+        Headsign: item.SubRoutes[0].Headsign,
+        RouteName: item.RouteName.Zh_tw,
+      };
     });
+    routeListAll.current.sort((a, b) => parseInt(a.RouteID) - parseInt(b.RouteID));
+    // console.log("routeListAll->", routeListAll.current);
   };
   const showList = () => {
     const routeListFilter = routeListAll.current.filter((item) => {
@@ -53,7 +49,7 @@ export default function SearchBox({ inputBus, setInputBus }) {
   useEffect(() => {
     getRouteList();
     console.log("執行getRouteList()取的靜態路線資料");
-  }, []);
+  }, [AllRoute]);
   useEffect(() => {
     setRouteQueryId(inputBus);
   }, [inputBus]);
@@ -80,7 +76,7 @@ export default function SearchBox({ inputBus, setInputBus }) {
               }
             }}
           />
-          <label className='text-center' for='typeText'>
+          <label className='text-center' htmlFor='typeText'>
             請輸入公車路線
           </label>
         </div>

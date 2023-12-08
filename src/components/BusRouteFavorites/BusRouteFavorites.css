@@ -41,14 +41,20 @@
   margin: 10px;
   line-height: 1.5rem;
 }
+/* 清空收藏 */
 .fav-header div span:nth-child(2) {
   font-size: 0.7rem;
   color: gray;
   text-align: center;
-  line-height: 0.9rem;
   display: block;
-  padding: 40px 10px 0 0;
+  margin: 40px 10px 0 0;
+  cursor: pointer;
 }
+.fav-header div span:nth-child(2):hover {
+  color: red;
+  font-size: 0.75rem;
+}
+/*  */
 .close-btn {
   width: 8%;
   height: 8%;

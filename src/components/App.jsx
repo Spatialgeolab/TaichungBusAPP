@@ -1,4 +1,5 @@
 // @ts-nocheck
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import "../index.css";
 import "leaflet/dist/leaflet.css";
@@ -10,7 +11,12 @@ import RouteDetail from "./RouteDetail";
 import RouteNav from "./RouteNav";
 import Lmap from "./Lmap";
 import BusRouteFavorites from "./BusRouteFavorites/BusRouteFavorites";
-import { setBusObj, addBusFavoriteItem, clearBusFavoriteItem } from "./store/busSlice";
+import {
+  setBusObj,
+  addBusFavoriteItem,
+  clearBusFavoriteItem,
+  setBusListAll,
+} from "./store/busSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {
   useGetBusPositionQuery,
@@ -24,11 +30,10 @@ import { authSetToken } from "./store/authSlice";
 export default function App() {
   // useSelector() 載入state數據
   const { token } = useSelector((state) => state.token);
-  const { busPosition, busDetail, busRoute, busRouteList, busStops, busFavoriteItem } = useSelector(
-    (state) => state.bus
-  );
+  const { busPosition, busDetail, busRoute, busRouteList, busStops, busFavoriteItem, busListAll } =
+    useSelector((state) => state.bus);
+  // console.log(busListAll);
   const dispatch = useDispatch();
-  // 以上練習redux
   const mapRef = useRef(null); // 地圖元素引用
   const [routeDetail, setRouteDetail] = useState([]); //使用useState來維護路線資訊的狀態
   const [stopName, setStopName] = useState(""); // 使用useState來維護站位的狀態
@@ -39,6 +44,7 @@ export default function App() {
   const [isUpdateData, setIsUpdateData] = useState(true);
   const [showFavorite, setShowFavorite] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
+  const [showPopup, setShowPopup] = useState(null);
   const handleTouchStart = () => {
     setIsTouched(true); // Set isTouched to true when touch starts
   };
@@ -170,12 +176,31 @@ export default function App() {
   const clearFavoriteRoute = () => {
     dispatch(clearBusFavoriteItem({}));
   };
+  // 加載靜態路線
+  useEffect(() => {
+    // useEffect中不可直接調用async,必須在內部定義
+    console.log("已有靜態路線資料");
+    if (localStorage.getItem("TaichungRouteList")) return;
+    const loadAllRoute = async () => {
+      console.log("加載靜態路線");
+      const response = await axios({
+        method: "get",
+        url: "TaichungRouteList.json",
+      });
+      dispatch(
+        setBusListAll({
+          busListAll: response.data,
+        })
+      );
+    };
+    loadAllRoute();
+  }, []);
   return (
     <>
       {/* 獲取到token後再進行mount */}
       {isGetToken && (
         <>
-          <nav class='navbar navbar-light bg-light'>
+          <nav className='navbar navbar-light bg-light'>
             <h1 className='text-dark d-block w-100 text-center'>台中市即時公車地圖</h1>
             {showFavorite && (
               <BusRouteFavorites
@@ -188,8 +213,8 @@ export default function App() {
           </nav>
           <div className='container-fluid'>
             {/* 響應式設計 > */}
-            <div class='row flex-column-reverse flex-sm-row'>
-              <div class='col-12 col-sm-4'>
+            <div className='row flex-column-reverse flex-sm-row'>
+              <div className='col-12 col-sm-4'>
                 <div className='container'>
                   <Button
                     onTouchStart={() => handleTouchStart(setIsTouched(true))}
@@ -199,7 +224,7 @@ export default function App() {
                     className={isTouched || showFavorite ? "favorite-btn-sm" : `favorite-btn`}>
                     <span>我的收藏路線</span>
                   </Button>
-                  <SearchBox inputBus={inputBus} setInputBus={setInputBus} />
+                  <SearchBox inputBus={inputBus} setInputBus={setInputBus} AllRoute={busListAll} />
                   <RouteNav setDirection={setDirection} direction={direction} />
                   <Routes>
                     <Route
@@ -216,6 +241,7 @@ export default function App() {
                           setIsUpdateData={setIsUpdateData}
                           busFavoriteItem={busFavoriteItem}
                           addFavoriteRoute={addFavoriteRoute}
+                          setShowPopup={setShowPopup}
                         />
                       }
                     />
@@ -233,15 +259,25 @@ export default function App() {
                           setIsUpdateData={setIsUpdateData}
                           busFavoriteItem={busFavoriteItem}
                           addFavoriteRoute={addFavoriteRoute}
+                          setShowPopup={setShowPopup}
                         />
                       }
                     />
                   </Routes>
                 </div>
               </div>
-              <div class='col-12 col-sm-8'>
+              <div className='col-12 col-sm-8'>
                 <div className='main-content'>
-                  <Lmap propsObj={{ inputBus, direction, setInputBus, formattedTime, mapRef }} />
+                  <Lmap
+                    propsObj={{
+                      inputBus,
+                      direction,
+                      setInputBus,
+                      formattedTime,
+                      mapRef,
+                      showPopup,
+                    }}
+                  />
                 </div>
               </div>
             </div>
